@@ -1,0 +1,53 @@
+version: '3.1' 
+
+services:
+  rdf4j-docker:
+    container_name: rdf4j-docker
+    image: openkbs/rdf4j-docker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    environment:
+      - USER_ID=${USER_ID:-1000}
+      - GROUP_ID=${GROUP_ID:-1000}
+      # - APP_HOME=${APP_HOME:-/home/developer/app}
+      # - APP_MAIN=${APP_MAIN:-setup.sh}
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP:-127.0.0.1}
+      - DOCKER_HOST_NAME=${DOCKER_HOST_NAME:-localhost}
+      ## ==== RDF4J Setup: ====
+      - RDF4J_VERSION=${RDF4J_VERSION:-3.6.3}
+      - RDF4J_DATA=${RDF4J_DATA:-/opt/eclipse-rdf4j-${RDF4J_VERSION}/data}
+      - JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
+    volumes:
+      ## ==== Common mapping ====
+      - /etc/hosts:/etc/hosts
+      - /dev/shm:/dev/shm 
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      ## ==== Use current directory as root for mapping Volumes ====
+      ## (You need to manually create those child directory: ./data, ./workspace, and others)
+      - ./data:/home/developer/data
+      - ./workspace:/home/developer/workspace
+    ports:
+      - 28080:8080
+      - 28443:8443
+    ## -------------------------------
+    ## -- Change to your specific port
+    ## -------------------------------
+    # ports:
+    #   - "12345:12345"
+
+    ## -----------------------------
+    ## -- Network setup if needed --
+    ## -----------------------------
+    # networks:
+    #  - dev_network
+
+#networks:
+#  dev_network:
+#    external:
+#      name: dev_network
+
+

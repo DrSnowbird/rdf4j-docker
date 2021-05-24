@@ -1,4 +1,4 @@
-# RDF4J Server (w/SPARQL Endpoint) + RDF4J Workbench (Web UI) + Docker + OpenJDK 8 + Maven 3.6 + Node 15
+# RDF4J Server (w/SPARQL Endpoint) + RDF4J Workbench (Web UI) + Docker + OpenJDK 8 + Python 3 + Node 15 + Maven 3
 [![](https://images.microbadger.com/badges/image/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own version badge on microbadger.com")
 
 # Run (recommended for easy-start)
@@ -26,6 +26,8 @@ To deploy an WAR file, first make sure that you already started container and th
 ```
 ./deploy.sh
 ```
+
+If you your WAR files need to use additional Docker ports, you will need to modify '.env' file add additional ports mapping.
 
 # Setting a specific password for the admin account
 -------------------------------------------------

@@ -1,12 +1,19 @@
 #!/bin/bash -x
 
 set -e
+whoami
 
 env | sort
 
 echo "Inputs: $*"
 
 function launch_tomcat() {
+    ls -al $HOME
+    if [ ! -s $HOME/data ]; then
+        mkdir -p $HOME/data
+    else
+        sudo chown -R $USER:$USER $HOME/data
+    fi
     echo "=============================================================="
     echo "=========== Setup APP: Tomcat: ==========="
     echo "=============================================================="

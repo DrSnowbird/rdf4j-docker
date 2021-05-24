@@ -15,6 +15,8 @@ ENV RDF4J_HOME=${RDF4J_HOME:-/opt/eclipse-rdf4j-${RDF4J_VERSION}}
 ENV RDF4J_DATA=${RDF4J_DATA:-/opt/eclipse-rdf4j-${RDF4J_VERSION}/data}
 ENV JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
 
+ENV USER=tomcat
+ENV HOME=/home/${USER}
 USER ${USER}
 WORKDIR ${HOME}
 
@@ -33,10 +35,6 @@ RUN ls -al ${CATALINA_HOME}
 RUN cat ${CATALINA_HOME}/bin/setenv.sh
 
 VOLUME ${RDF4J_DATA}
-
-#### ------------------------
-#### ---- Start Tomcat:  ----
-#### ------------------------
 
 EXPOSE 8080
 

@@ -698,12 +698,15 @@ HOSTS_OPTIONS="-v /etc/hosts:/etc/hosts"
 ## ----------------- main --------------------- ##
 ##################################################
 ##################################################
+echo "----------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------"
 set -x
 case "${BUILD_TYPE}" in
     0)
         #### 0: (default) has neither X11 nor VNC/noVNC container build image type
         #### ---- for headless-based / GUI-less ---- ####
         MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
+        echo "----------------------------------------------------------------------------------"
         sudo docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
@@ -714,7 +717,7 @@ case "${BUILD_TYPE}" in
             ${VOLUME_MAP} \
             ${PORT_MAP} \
             ${imageTag} \
-            $*
+            $@
         ;;
     1)
         #### 1: X11/Desktip container build image type
@@ -736,7 +739,7 @@ case "${BUILD_TYPE}" in
             ${VOLUME_MAP} \
             ${PORT_MAP} \
             ${imageTag} \
-            $*
+            $@
         ;;
     2)
         #### 2: VNC/noVNC container build image type
@@ -759,7 +762,7 @@ case "${BUILD_TYPE}" in
             ${VOLUME_MAP} \
             ${PORT_MAP} \
             ${imageTag} \
-            $*
+            $@
         ;;
 
 esac

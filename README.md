@@ -1,4 +1,4 @@
-# rdf4j-docker= RDF4J Server + RDF4J Workbench (Web UI)
+# rdf4j-docker = Docker with RDF4J Server + RDF4J Workbench (Web UI)
 [![](https://images.microbadger.com/badges/image/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own version badge on microbadger.com")
 
 # Run (recommended for easy-start)
@@ -22,8 +22,9 @@ or
 ./build.sh
 ```
 
-# Deploy an WAR file
-To deploy an WAR file, first make sure that you already started container and then just drop your WAR file into the `./deploy` directory, then run
+# Deploy a WAR file
+You can deploy additional WAR files in this Docker Container.
+To deploy an WAR file, first make sure that you already started container and then just drop your WAR file into the `./deploy` directory, then run the command below. You can deploy multiple WAR files by drop all of them into the deploy directory.
 ```
 ./deploy.sh
 ```

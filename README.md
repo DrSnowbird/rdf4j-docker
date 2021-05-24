@@ -1,4 +1,4 @@
-# rdf4j-docker = Docker with RDF4J Server + RDF4J Workbench (Web UI)
+# RDF4J Server (w/SPARQL Endpoint) + RDF4J Workbench (Web UI) + Docker + OpenJDK 8 + Maven 3.6 + Node 15
 [![](https://images.microbadger.com/badges/image/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own version badge on microbadger.com")
 
 # Run (recommended for easy-start)
@@ -6,19 +6,17 @@
 ```
 ./run.sh
 ```
-Then, open Web Browser: login `tomcat` (or `admin`) with default password, `password`
+Then, open Web Browser: login `tomcat` (or `admin`) with default password, `ChangeNow!`
 ```
-    http://<host_ip>:28880/
+http://<host_ip>:28880/
     or
-    https://<host_ip>:28443/
+https://<host_ip>:28443/
 ```
 
 # Build (local image)
 ```
 make build
-```
-or
-```
+    or
 ./build.sh
 ```
 
@@ -35,7 +33,7 @@ To deploy an WAR file, first make sure that you already started container and th
 If you want to use a preset password instead of a randomly generated one, you can
 set the environment variable `TOMCAT_PASSWORD` to your specific password when running the container:
 ```
-    docker run -d -p 8080:8080 -p 8443:8443-e TOMCAT_PASSWORD="mypass" openkbs/jdk-tomcat
+docker run -d -p 8080:8080 -p 8443:8443-e TOMCAT_PASSWORD="mypass" openkbs/jdk-tomcat
 ```
 
 # Resource

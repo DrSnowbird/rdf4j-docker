@@ -33,7 +33,7 @@ To deploy an WAR file, first make sure that you already started container and th
 If you want to use a preset password instead of a randomly generated one, you can
 set the environment variable `TOMCAT_PASSWORD` to your specific password when running the container:
 ```
-docker run -d -p 8080:8080 -p 8443:8443-e TOMCAT_PASSWORD="mypass" openkbs/rd4j-docker
+docker run -d -p 8080:8080 -p 8443:8443-e TOMCAT_PASSWORD="mypass" openkbs/rdf4j-docker
 ```
 
 # Resource

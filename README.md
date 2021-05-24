@@ -27,7 +27,7 @@ To deploy an WAR file, first make sure that you already started container and th
 ./deploy.sh
 ```
 
-If you your WAR files need to use additional Docker ports, you will need to modify '.env' file add additional ports mapping.
+If you your WAR files need to use additional Docker ports, you will need to modify '.env' file to add additional ports mapping.
 
 # Setting a specific password for the admin account
 -------------------------------------------------
@@ -39,8 +39,11 @@ docker run -d -p 8080:8080 -p 8443:8443-e TOMCAT_PASSWORD="mypass" openkbs/rdf4j
 ```
 
 # Resource
-[RDF4J](https://rdf4j.org/)
-[RDF4J-Documentation](https://rdf4j.org/documentation/)
+* [RDF4J](https://rdf4j.org/)
+* [RDF4J-Documentation](https://rdf4j.org/documentation/)
+* [DrSnowbird/json2rdf-docker](https://github.com/DrSnowbird/json2rdf-docker)
+* [DrSnowbird/visualRDF](https://github.com/DrSnowbird/visualRDF)
+* [DrSnowbird/SANSA-RDF](https://github.com/DrSnowbird/SANSA-RDF)
 
 # Reference: 
 * [Apache Tomcat](https://tomcat.apache.org/)

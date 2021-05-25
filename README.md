@@ -41,7 +41,7 @@ To deploy an WAR file, first make sure that you already started container and th
 ./deploy.sh
 ```
 
-If you your WAR files need to use additional Docker ports, you will need to modify '.env' file to add additional ports mapping.
+If your WAR files need to use additional Docker ports, you will need to modify '.env' file to add additional ports mapping.
 
 # Setting a specific password for the admin account
 -------------------------------------------------

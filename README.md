@@ -6,11 +6,25 @@
 ```
 ./run.sh
 ```
-Then, open Web Browser: login `tomcat` (or `admin`) with default password, `ChangeNow!`
+## RDF4J Servers or Workbench
+(Both HTTP and HTTPS)
+```
+http://<host_ip>:28880/rdf4j-workbench
+http://0.0.0.0:28880/rdf4j-workbench
+http://0.0.0.0:28880/rdf4j-server
+    or
+https://<host_ip>:28443/rdf4j-workbench
+https://0.0.0.0:28443/rdf4j-workbench
+https://0.0.0.0:28443/rdf4j-server
+```
+## Tomcat Server
+Web Browser: login `tomcat` (or `admin`) with a default password, `ChangeNow!`
 ```
 http://<host_ip>:28880/
+http://0.0.0.0:28880/
     or
 https://<host_ip>:28443/
+https://0.0.0.0:28443/
 ```
 
 # Build (local image)

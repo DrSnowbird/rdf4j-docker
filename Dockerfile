@@ -31,8 +31,8 @@ RUN cp ${RDF4J_HOME}/war/*.war ${CATALINA_WEBAPPS}
 RUN echo "CATALINA_OPTS=\"\$CATALINA_OPTS \$JVM_PARAMS -Dorg.eclipse.rdf4j.appdata.basedir=\$RDF4J_DATA\"" >> ${CATALINA_HOME}/bin/setenv.sh
 
 ## -- debug only (remove these when done) --
-RUN ls -al ${CATALINA_HOME}
-RUN cat ${CATALINA_HOME}/bin/setenv.sh
+#RUN ls -al ${CATALINA_HOME}
+#RUN cat ${CATALINA_HOME}/bin/setenv.sh
 
 VOLUME ${RDF4J_DATA}
 

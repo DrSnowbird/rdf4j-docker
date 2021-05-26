@@ -55,8 +55,9 @@ docker run -d -p 8080:8080 -p 8443:8443-e TOMCAT_PASSWORD="mypass" openkbs/rdf4j
 # Resource
 * [RDF4J](https://rdf4j.org/)
 * [RDF4J-Documentation](https://rdf4j.org/documentation/)
-* [DrSnowbird/json2rdf-docker](https://github.com/DrSnowbird/json2rdf-docker)
-* [DrSnowbird/visualRDF](https://github.com/DrSnowbird/visualRDF)
+* [DrSnowbird/blazegraph-docker, high-performance RDF Server](https://github.com/DrSnowbird/blazegraph-docker)
+* [DrSnowbird/json2rdf-docker, converting JSON to RDF](https://github.com/DrSnowbird/json2rdf-docker)
+* [DrSnowbird/visualRDF, Visualize RDF Graph](https://github.com/DrSnowbird/visualRDF)
 * [DrSnowbird/SANSA-RDF](https://github.com/DrSnowbird/SANSA-RDF)
 
 # Reference: 

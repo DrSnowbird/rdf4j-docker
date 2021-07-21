@@ -4,6 +4,7 @@ services:
   rdf4j-docker:
     container_name: rdf4j-docker
     image: openkbs/rdf4j-docker
+    hostname: $HOSTNAME
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,7 +26,10 @@ services:
       - /etc/hosts:/etc/hosts
       - /dev/shm:/dev/shm 
       - /var/run/docker.sock:/var/run/docker.sock
-
+      ## ==== RDF4J Setup: ====
+      ## (make sure you manually create directory below before you run docker-compose!!)
+      ## (mkdir -p ./data)
+      - ./data:${RDF4J_DATA}
       ## ==== Use current directory as root for mapping Volumes ====
       ## (You need to manually create those child directory: ./data, ./workspace, and others)
       - ./data:/home/developer/data

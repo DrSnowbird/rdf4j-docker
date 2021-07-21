@@ -36,14 +36,16 @@ RUN echo "CATALINA_OPTS=\"\$CATALINA_OPTS \$JVM_PARAMS -Dorg.eclipse.rdf4j.appda
 
 VOLUME ${RDF4J_DATA}
 
-EXPOSE 8080
+EXPOSE 8080 8443
 
 #### ------------------------
 #### ---- Start Tomcat:  ----
 #### ------------------------
+RUN sudo chmod +x /docker-entrypoint.sh && ls -al /docker-entrypoint.sh
 
 USER ${USER}
 WORKDIR ${CATALINA_HOME}
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["/launch_tomcat.sh"]
 

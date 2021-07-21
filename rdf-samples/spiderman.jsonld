@@ -1,0 +1,24 @@
+[ {
+  "@graph" : [ {
+    "@id" : "http://example.org/#green-goblin",
+    "@type" : [ "http://xmlns.com/foaf/0.1/Person" ],
+    "http://www.perceive.net/schemas/relationship/enemyOf" : [ {
+      "@id" : "http://example.org/#spiderman"
+    } ],
+    "http://xmlns.com/foaf/0.1/name" : [ {
+      "@value" : "Green Goblin"
+    } ]
+  }, {
+    "@id" : "http://example.org/#spiderman",
+    "@type" : [ "http://xmlns.com/foaf/0.1/Person" ],
+    "http://www.perceive.net/schemas/relationship/enemyOf" : [ {
+      "@id" : "http://example.org/#green-goblin"
+    } ],
+    "http://xmlns.com/foaf/0.1/name" : [ {
+      "@value" : "Spiderman"
+    }, {
+      "@value" : "Peter Parker"
+    } ]
+  } ],
+  "@id" : "http://spiderman"
+} ]

@@ -1,4 +1,4 @@
-# RDF4J Server (w/SPARQL Endpoint) + RDF4J Workbench (Web UI) + Docker + OpenJDK 8 + Python 3 + Node 15 + Maven 3
+# RDF4J Server (w/SPARQL Endpoint) + RDF4J Workbench (Web UI) + Docker + OpenJDK 8 + Python 3 + Node 16 + Maven 3
 [![](https://images.microbadger.com/badges/image/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own version badge on microbadger.com")
 
 # Run (recommended for easy-start)
@@ -8,23 +8,22 @@
 ```
 ## RDF4J Servers or Workbench
 (Both HTTP and HTTPS)
+* http:
 ```
 http://<host_ip>:28880/rdf4j-workbench
-http://0.0.0.0:28880/rdf4j-workbench
-http://0.0.0.0:28880/rdf4j-server
-    or
+http://<host_ip>:28880/rdf4j-server
+```
+* https:
+```
 https://<host_ip>:28443/rdf4j-workbench
-https://0.0.0.0:28443/rdf4j-workbench
-https://0.0.0.0:28443/rdf4j-server
+https://<host_ip>:28443/rdf4j-server
 ```
 ## Tomcat Server
 Web Browser: login `tomcat` (or `admin`) with a default password, `ChangeNow!`
 ```
 http://<host_ip>:28880/
-http://0.0.0.0:28880/
     or
 https://<host_ip>:28443/
-https://0.0.0.0:28443/
 ```
 
 # Build (local image)
@@ -45,11 +44,9 @@ If your WAR files need to use additional Docker ports, you will need to modify '
 
 # Setting a specific password for the admin account
 -------------------------------------------------
-
-If you want to use a preset password instead of a randomly generated one, you can
-set the environment variable `TOMCAT_PASSWORD` to your specific password when running the container:
+To change TOMCAT password for login 'admin', you can edit './env' file as:
 ```
-docker run -d -p 8080:8080 -p 8443:8443-e TOMCAT_PASSWORD="mypass" openkbs/rdf4j-docker
+TOMCAT_PASSWORD=SomewSecretPassword!
 ```
 
 # Resource

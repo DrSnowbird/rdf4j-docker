@@ -10,7 +10,12 @@ MAINTAINER DrSnowbird "DrSnowbird@openkbs.org"
 #ENV CATALINA_WEBAPPS=${CATALINA_WEBAPPS:-/opt/tomcat/webapps}
 #ENV TOMCAT_HOME=${TOMCAT_HOME:-/opt/tomcat}
 
-ENV RDF4J_VERSION=${RDF4J_VERSION:-3.6.3}
+#### ====
+#### ==== This will be replaced with the latest release from the download site of the product ====
+#### ====
+ENV PRODUCT_VERSION=3.7.3
+
+ENV RDF4J_VERSION=${PRODUCT_VERSION}
 ENV RDF4J_HOME=${RDF4J_HOME:-/opt/eclipse-rdf4j-${RDF4J_VERSION}}
 ENV RDF4J_DATA=${RDF4J_DATA:-/opt/eclipse-rdf4j-${RDF4J_VERSION}/data}
 ENV JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
@@ -48,4 +53,3 @@ WORKDIR ${CATALINA_HOME}
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["/launch_tomcat.sh"]
-

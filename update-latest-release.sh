@@ -16,9 +16,9 @@ function replaceValueInConfig() {
     FILE=${1}
     KEY=${2}
     VALUE=${3}
-    #sed -i 's/^ENV[[:blank:]]*'$KEY'[[:blank:]]*=.*/ENV '$KEY'='$VALUE'/gm' $FILE
-    #sed -i 's/^ARG[[:blank:]]*'$KEY'[[:blank:]]*=.*/ARG '$KEY'='$VALUE'/gm' $FILE
-    sed -i 's/^\(ARG\|ENV\)[[:blank:]]*'$KEY'[[:blank:]]*=.*/\1 '$KEY'='$VALUE'/gm' $FILE
+    #sed -i 's#^ENV[[:blank:]]*'$KEY'[[:blank:]]*=.*/ENV '$KEY'='$VALUE'#gm' $FILE
+    #sed -i 's#^ARG[[:blank:]]*'$KEY'[[:blank:]]*=.*#ARG '$KEY'='$VALUE'#gm' $FILE
+    sed -i 's#^\(ARG\|ENV\)[[:blank:]]*'$KEY'[[:blank:]]*=.*#\1 '$KEY'='"$VALUE"'#gm' $FILE
     echo "results (after replacement) with new value:"
     cat $FILE |grep "${CONFIG_KEY}"
 }

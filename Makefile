@@ -2,7 +2,7 @@
 # login first (Registry: e.g., hub.docker.io, registry.localhost:5000, etc.)
 # a.)  docker login
 # or
-# b.) sudo docker login -p FpXM6Qy9vVL5kPeoefzxwA-oaYb-Wpej2iXTwV7UHYs -e unused -u unused docker-registry-default.openkbs.org
+# b.) docker login -p FpXM6Qy9vVL5kPeoefzxwA-oaYb-Wpej2iXTwV7UHYs -e unused -u unused docker-registry-default.openkbs.org
 # e.g. (using Openshift)
 #    oc process -f ./files/deployments/template.yml -v API_NAME=$(REGISTRY_IMAGE) > template.active
 #
@@ -63,7 +63,7 @@ clean:
 default: build
 
 build:
-	sudo docker build \
+	docker build \
 	--build-arg BASE_IMAGE="$(BASE_IMAGE)" \
 	--build-arg CIRCLE_SHA1="$(SHA)" \
 	--build-arg version=$(VERSION) \
@@ -72,42 +72,42 @@ build:
 	-t $(DOCKER_IMAGE):$(VERSION) .
 
 push: build
-	sudo docker commit -m "$comment" ${containerID} ${imageTag}:$(VERSION)
-	sudo docker push $(DOCKER_IMAGE):$(VERSION)
+	docker commit -m "$comment" ${containerID} ${imageTag}:$(VERSION)
+	docker push $(DOCKER_IMAGE):$(VERSION)
 
 	docker tag $(imageTag):$(VERSION) $(REGISTRY_IMAGE):$(VERSION)
-	#sudo docker tag $(imageTag):latest $(REGISTRY_IMAGE):latest
+	#docker tag $(imageTag):latest $(REGISTRY_IMAGE):latest
 	docker push $(REGISTRY_IMAGE):$(VERSION)
-	#sudo docker push $(REGISTRY_IMAGE):latest
+	#docker push $(REGISTRY_IMAGE):latest
 	@if [ ! "$(IMAGE_EXPORT_PATH)" = "" ]; then \
 		mkdir -p $(IMAGE_EXPORT_PATH); \
-		sudo docker save $(REGISTRY_IMAGE):$(VERSION) | gzip > $(IMAGE_EXPORT_PATH)/$(DOCKER_NAME)_$(VERSION).tar.gz; \
+		docker save $(REGISTRY_IMAGE):$(VERSION) | gzip > $(IMAGE_EXPORT_PATH)/$(DOCKER_NAME)_$(VERSION).tar.gz; \
 	fi
 pull:
 	@if [ "$(REGISTRY_HOST)" = "" ]; then \
-		sudo docker pull $(DOCKER_IMAGE):$(VERSION) ; \
+		docker pull $(DOCKER_IMAGE):$(VERSION) ; \
 	else \
-		sudo docker pull $(REGISTRY_IMAGE):$(VERSION) ; \
+		docker pull $(REGISTRY_IMAGE):$(VERSION) ; \
 	fi
 
 
-up: build
-	sudo docker-compose up -d
+up: 
+	docker-compose up -d
 
 down:
-	sudo docker-compose down
+	docker-compose down
 
 run:
-	sudo docker run --name=$(DOCKER_NAME) --restart=$(RESTART_OPTION) $(VOLUME_MAP) $(DOCKER_IMAGE):$(VERSION)
+	docker run --name=$(DOCKER_NAME) --restart=$(RESTART_OPTION) $(VOLUME_MAP) $(DOCKER_IMAGE):$(VERSION)
 
 stop: run
-	sudo docker stop --name=$(DOCKER_NAME)
+	docker stop --name=$(DOCKER_NAME)
 
 status:
-	sudo docker ps
+	docker ps
 
 rmi:
-	sudo docker rmi $$(docker images -f dangling=true -q)
+	docker rmi $$(docker images -f dangling=true -q)
 
 exec: up
-	sudo docker-compose exec $(DOCKER_NAME) /bin/bash
+	docker-compose exec $(DOCKER_NAME) /bin/bash

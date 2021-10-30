@@ -790,7 +790,7 @@ case "${BUILD_TYPE}" in
         #### 0: (default) has neither X11 nor VNC/noVNC container build image type
         #### ---- for headless-based / GUI-less ---- ####
         MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
-        sudo docker run \
+        docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
@@ -812,7 +812,7 @@ case "${BUILD_TYPE}" in
         X11_OPTION="-e DISPLAY=$DISPLAY -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix"
         echo "X11_OPTION=${X11_OPTION}"
         MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
-        sudo docker run \
+        docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
             ${MEDIA_OPTIONS} \
@@ -837,7 +837,7 @@ case "${BUILD_TYPE}" in
             ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
         fi
         MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
-        sudo docker run \
+        docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \

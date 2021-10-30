@@ -64,13 +64,12 @@ default: build
 
 build:
 	docker build \
-	--build-arg BASE_IMAGE="$(BASE_IMAGE)" \
-	--build-arg CIRCLE_SHA1="$(SHA)" \
-	--build-arg version=$(VERSION) \
-	--build-arg VCS_REF=`git rev-parse --short HEAD` \
-	--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
 	-t $(DOCKER_IMAGE):$(VERSION) .
 
+build-rm:
+	docker build --force-rm --no-cache \
+	-t $(DOCKER_IMAGE):$(VERSION) .
+	
 push: build
 	docker commit -m "$comment" ${containerID} ${imageTag}:$(VERSION)
 	docker push $(DOCKER_IMAGE):$(VERSION)

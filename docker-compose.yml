@@ -32,23 +32,24 @@ services:
       - ./data:${RDF4J_DATA}
       ## ==== Use current directory as root for mapping Volumes ====
       ## (You need to manually create those child directory: ./data, ./workspace, and others)
-      - ./data:/home/developer/data
-      - ./workspace:/home/developer/workspace
-    ports:
-      - 28080:8080
-      - 28443:8443
+      - ./data:/home/tomcat/data
+      - ./workspace:/home/tomcat/workspace
+      ## ==== Special Volume for RDF4J Repositories
+      #- rdf4j_volume:/home/tomcat/rdf4j_data:rw
+
     ## -------------------------------
     ## -- Change to your specific port
     ## -------------------------------
-    # ports:
-    #   - "12345:12345"
+    ports:
+      - 28080:8080
+      - 28443:8443
 
     ## -----------------------------
     ## -- Network setup if needed --
     ## -----------------------------
     # networks:
     #  - dev_network
-
+  
 #networks:
 #  dev_network:
 #    external:

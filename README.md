@@ -1,11 +1,19 @@
 # RDF4J Server (w/SPARQL Endpoint) + RDF4J Workbench (Web UI) + Docker + OpenJDK 8 + Python 3 + Node 16 + Maven 3
 [![](https://images.microbadger.com/badges/image/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/openkbs/rdf4j-docker.svg)](https://microbadger.com/images/openkbs/rdf4j-docker "Get your own version badge on microbadger.com")
 
+# Build (local image)
+```
+make build
+    or
+./build.sh
+```
+
 # Run (recommended for easy-start)
 
 ```
 ./run.sh
 ```
+
 ## RDF4J Servers or Workbench
 (Both HTTP and HTTPS)
 * http:
@@ -24,13 +32,6 @@ Web Browser: login `tomcat` (or `admin`) with a default password, `ChangeNow!`
 http://<host_ip>:28880/
     or
 https://<host_ip>:28443/
-```
-
-# Build (local image)
-```
-make build
-    or
-./build.sh
 ```
 
 # Deploy a WAR file

@@ -1,0 +1,130 @@
+[ {
+  "@id" : "_:node1fj7lve3kx1",
+  "http://dig.isi.edu/at_some_time_within_date" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#date",
+    "@value" : "2018-01-12"
+  } ],
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://dig.isi.edu/Time_Span"
+  } ]
+}, {
+  "@graph" : [ {
+    "@id" : "_:node1fj8nkr02x1",
+    "http://dig.isi.edu/at_some_time_within_date" : [ {
+      "@type" : "http://www.w3.org/2001/XMLSchema#date",
+      "@value" : "2018-01-12"
+    } ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+      "@id" : "http://dig.isi.edu/Time_Span"
+    } ]
+  }, {
+    "@id" : "http://dig.isi.edu/John",
+    "@type" : [ "http://dig.isi.edu/Man" ],
+    "http://dig.isi.edu/hasSpouse" : [ {
+      "@id" : "http://dig.isi.edu/Mary"
+    } ],
+    "http://dig.isi.edu/name" : [ {
+      "@value" : "John"
+    } ]
+  }, {
+    "@id" : "http://dig.isi.edu/John_jr",
+    "@type" : [ "http://dig.isi.edu/Man" ],
+    "http://dig.isi.edu/hasParent" : [ {
+      "@id" : "http://dig.isi.edu/John"
+    }, {
+      "@id" : "http://dig.isi.edu/Mary"
+    } ],
+    "http://dig.isi.edu/name" : [ {
+      "@value" : "John Jr."
+    } ]
+  }, {
+    "@id" : "http://dig.isi.edu/Mary",
+    "@type" : [ "http://dig.isi.edu/Woman" ],
+    "http://dig.isi.edu/hasSpouse" : [ {
+      "@id" : "http://dig.isi.edu/John"
+    } ],
+    "http://dig.isi.edu/name" : [ {
+      "@value" : "Mary"
+    } ]
+  }, {
+    "@id" : "http://dig.isi.edu/Time_Span",
+    "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
+  }, {
+    "@id" : "http://dig.isi.edu/event",
+    "@type" : [ "http://dig.isi.edu/Activity" ],
+    "http://dig.isi.edu/has_time_span" : [ {
+      "@id" : "_:node1fj8nkr02x1"
+    } ]
+  }, {
+    "@id" : "http://dig.isi.edu/u129u-klejkajo-2309124u-sajfl",
+    "@type" : [ "http://dig.isi.edu/Person" ],
+    "http://dig.isi.edu/name" : [ {
+      "@value" : "John Doe"
+    } ]
+  } ],
+  "@id" : "http://dig.isi.edu/"
+}, {
+  "@id" : "http://dig.isi.edu/John",
+  "@type" : [ "http://dig.isi.edu/Man" ],
+  "http://dig.isi.edu/hasSpouse" : [ {
+    "@id" : "http://dig.isi.edu/Mary"
+  } ],
+  "http://dig.isi.edu/name" : [ {
+    "@value" : "John"
+  } ]
+}, {
+  "@id" : "http://dig.isi.edu/John_jr",
+  "@type" : [ "http://dig.isi.edu/Man" ],
+  "http://dig.isi.edu/hasParent" : [ {
+    "@id" : "http://dig.isi.edu/John"
+  }, {
+    "@id" : "http://dig.isi.edu/Mary"
+  } ],
+  "http://dig.isi.edu/name" : [ {
+    "@value" : "John Jr."
+  } ]
+}, {
+  "@id" : "http://dig.isi.edu/Mary",
+  "@type" : [ "http://dig.isi.edu/Woman" ],
+  "http://dig.isi.edu/hasSpouse" : [ {
+    "@id" : "http://dig.isi.edu/John"
+  } ],
+  "http://dig.isi.edu/name" : [ {
+    "@value" : "Mary"
+  } ]
+}, {
+  "@id" : "http://dig.isi.edu/Time_Span",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
+}, {
+  "@id" : "http://dig.isi.edu/event",
+  "@type" : [ "http://dig.isi.edu/Activity" ],
+  "http://dig.isi.edu/has_time_span" : [ {
+    "@id" : "_:node1fj7lve3kx1"
+  } ]
+}, {
+  "@id" : "http://dig.isi.edu/u129u-klejkajo-2309124u-sajfl",
+  "@type" : [ "http://dig.isi.edu/Person" ],
+  "http://dig.isi.edu/name" : [ {
+    "@value" : "John Doe"
+  } ]
+}, {
+  "@id" : "http://spiderman.example.org/green-goblin",
+  "@type" : [ "http://xmlns.com/foaf/0.1/Person" ],
+  "http://www.perceive.net/schemas/relationship/enemyOf" : [ {
+    "@id" : "http://spiderman.example.org/spiderman"
+  } ],
+  "http://xmlns.com/foaf/0.1/name" : [ {
+    "@value" : "Green Goblin"
+  } ]
+}, {
+  "@id" : "http://spiderman.example.org/spiderman",
+  "@type" : [ "http://xmlns.com/foaf/0.1/Person" ],
+  "http://www.perceive.net/schemas/relationship/enemyOf" : [ {
+    "@id" : "http://spiderman.example.org/green-goblin"
+  } ],
+  "http://xmlns.com/foaf/0.1/name" : [ {
+    "@value" : "Spiderman"
+  }, {
+    "@value" : "Peter Parker"
+  } ]
+} ]

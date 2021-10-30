@@ -1,0 +1,228 @@
+{
+	"variables": [],
+	"info": {
+		"name": "RDF4J-SPARQL",
+		"_postman_id": "89492d2c-e89b-c0f0-a80c-0176e4b4023a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RDF4J-SPARQL-Query-by-CONSTRUCT",
+			"request": {
+				"url": "http://0.0.0.0:28080/rdf4j-server/repositories/rdfs001",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/sparql-query",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/rdf+xml",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "construct {?s ?p ?o} \nwhere {?s ?p ?o}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RDF4J-SPARQL-Query-FROM-graph-JSON",
+			"request": {
+				"url": "http://0.0.0.0:28080/rdf4j-server/repositories/rdfs001",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/sparql-query",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/sparql-results+json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/sparql-results+xml",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/x-binary-rdf-results-table",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "PREFIX dig: <http://dig.isi.edu/>\nPREFIX spider: <http://spiderman.example.org/>\n\nPREFIX : <http://dig.isi.edu/>\nPREFIX rel: <http://www.perceive.net/schemas/relationship/>\n\nSELECT ?s ?p ?o\nFROM dig:\nWHERE {\n    ?s ?p ?o .\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RDF4J-REST-Query-Resources",
+			"request": {
+				"url": {
+					"raw": "http://0.0.0.0:28080/rdf4j-server/repositories/rdfs001/explore?resource=dig%3A",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "28080",
+					"path": [
+						"rdf4j-server",
+						"repositories",
+						"rdfs001",
+						"explore"
+					],
+					"query": [
+						{
+							"key": "resource",
+							"value": "dig%3A",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/sparql-query",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/rdf+xml",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "construct {?s ?p ?o} \nwhere {?s ?p ?o}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RDF4J-Graph-Service_graph=http://dig.isi.edu/",
+			"request": {
+				"url": {
+					"raw": "http://0.0.0.0:28080/rdf4j-server/repositories/rdfs001/rdf-graphs/service?graph=http://dig.isi.edu/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "28080",
+					"path": [
+						"rdf4j-server",
+						"repositories",
+						"rdfs001",
+						"rdf-graphs",
+						"service"
+					],
+					"query": [
+						{
+							"key": "resource",
+							"value": "dig%3A",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "default",
+							"value": "",
+							"equals": false,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "graph",
+							"value": "http://dig.isi.edu/",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/sparql-query",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/rdf+xml",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "construct {?s ?p ?o} \nwhere {?s ?p ?o}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RDF4J-REST-GET-namespaces",
+			"request": {
+				"url": "http://0.0.0.0:28080/rdf4j-server/repositories/rdfs001/namespaces",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/sparql-query",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/sparql-results+xml",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "construct {?s ?p ?o} \nwhere {?s ?p ?o}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

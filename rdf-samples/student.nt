@@ -1,0 +1,41 @@
+<http://dig.isi.edu/John> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Man> .
+<http://dig.isi.edu/John> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Man> .
+<http://dig.isi.edu/John> <http://dig.isi.edu/hasSpouse> <http://dig.isi.edu/Mary> .
+<http://dig.isi.edu/John> <http://dig.isi.edu/hasSpouse> <http://dig.isi.edu/Mary> .
+<http://dig.isi.edu/John> <http://dig.isi.edu/name> "John" .
+<http://dig.isi.edu/John> <http://dig.isi.edu/name> "John" .
+<http://dig.isi.edu/Mary> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Woman> .
+<http://dig.isi.edu/Mary> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Woman> .
+<http://dig.isi.edu/Mary> <http://dig.isi.edu/hasSpouse> <http://dig.isi.edu/John> .
+<http://dig.isi.edu/Mary> <http://dig.isi.edu/hasSpouse> <http://dig.isi.edu/John> .
+<http://dig.isi.edu/Mary> <http://dig.isi.edu/name> "Mary" .
+<http://dig.isi.edu/Mary> <http://dig.isi.edu/name> "Mary" .
+<http://dig.isi.edu/John_jr> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Man> .
+<http://dig.isi.edu/John_jr> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Man> .
+<http://dig.isi.edu/John_jr> <http://dig.isi.edu/hasParent> <http://dig.isi.edu/John> .
+<http://dig.isi.edu/John_jr> <http://dig.isi.edu/hasParent> <http://dig.isi.edu/John> .
+<http://dig.isi.edu/John_jr> <http://dig.isi.edu/hasParent> <http://dig.isi.edu/Mary> .
+<http://dig.isi.edu/John_jr> <http://dig.isi.edu/hasParent> <http://dig.isi.edu/Mary> .
+<http://dig.isi.edu/John_jr> <http://dig.isi.edu/name> "John Jr." .
+<http://dig.isi.edu/John_jr> <http://dig.isi.edu/name> "John Jr." .
+<http://dig.isi.edu/Time_Span> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://dig.isi.edu/Time_Span> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://dig.isi.edu/event> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Activity> .
+<http://dig.isi.edu/event> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Activity> .
+<http://dig.isi.edu/event> <http://dig.isi.edu/has_time_span> _:node1fj7lve3kx1 .
+<http://dig.isi.edu/event> <http://dig.isi.edu/has_time_span> _:node1fj8nkr02x1 .
+_:node1fj7lve3kx1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Time_Span> .
+_:node1fj7lve3kx1 <http://dig.isi.edu/at_some_time_within_date> "2018-01-12"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://dig.isi.edu/u129u-klejkajo-2309124u-sajfl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Person> .
+<http://dig.isi.edu/u129u-klejkajo-2309124u-sajfl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Person> .
+<http://dig.isi.edu/u129u-klejkajo-2309124u-sajfl> <http://dig.isi.edu/name> "John Doe" .
+<http://dig.isi.edu/u129u-klejkajo-2309124u-sajfl> <http://dig.isi.edu/name> "John Doe" .
+<http://spiderman.example.org/green-goblin> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://spiderman.example.org/green-goblin> <http://xmlns.com/foaf/0.1/name> "Green Goblin" .
+<http://spiderman.example.org/green-goblin> <http://www.perceive.net/schemas/relationship/enemyOf> <http://spiderman.example.org/spiderman> .
+<http://spiderman.example.org/spiderman> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://spiderman.example.org/spiderman> <http://xmlns.com/foaf/0.1/name> "Spiderman" .
+<http://spiderman.example.org/spiderman> <http://xmlns.com/foaf/0.1/name> "Peter Parker" .
+<http://spiderman.example.org/spiderman> <http://www.perceive.net/schemas/relationship/enemyOf> <http://spiderman.example.org/green-goblin> .
+_:node1fj8nkr02x1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dig.isi.edu/Time_Span> .
+_:node1fj8nkr02x1 <http://dig.isi.edu/at_some_time_within_date> "2018-01-12"^^<http://www.w3.org/2001/XMLSchema#date> .

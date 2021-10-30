@@ -41,8 +41,8 @@ RUN echo "CATALINA_OPTS=\"\$CATALINA_OPTS \$JVM_PARAMS -Dorg.eclipse.rdf4j.appda
 ## -- debug only (remove these when done) --
 #RUN ls -al ${CATALINA_HOME}
 #RUN cat ${CATALINA_HOME}/bin/setenv.sh
-RUN mkdir -p ${RDF4J_DATA}
-VOLUME ${RDF4J_DATA}
+#RUN mkdir -p ${RDF4J_DATA}
+#VOLUME ${RDF4J_DATA}
 
 EXPOSE 8080 8443
 

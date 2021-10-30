@@ -1,0 +1,45 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix fn: <http://www.w3.org/2005/xpath-functions#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sesame: <http://www.openrdf.org/schema/sesame#> .
+@prefix rdf4j: <http://rdf4j.org/schema/rdf4j#> .
+@prefix dig: <http://dig.isi.edu/> .
+@prefix rel: <http://www.perceive.net/schemas/relationship/> .
+@prefix spider: <http://spiderman.example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+dig:John a dig:Man, dig:Man;
+  dig:hasSpouse dig:Mary, dig:Mary;
+  dig:name "John", "John" .
+
+dig:Mary a dig:Woman, dig:Woman;
+  dig:hasSpouse dig:John, dig:John;
+  dig:name "Mary", "Mary" .
+
+dig:John_jr a dig:Man, dig:Man;
+  dig:hasParent dig:John, dig:John, dig:Mary, dig:Mary;
+  dig:name "John Jr.", "John Jr." .
+
+dig:Time_Span a owl:Class, owl:Class .
+
+dig:event a dig:Activity, dig:Activity;
+  dig:has_time_span _:node1fj7lve3kx1, _:node1fj8nkr02x1 .
+
+_:node1fj7lve3kx1 a dig:Time_Span;
+  dig:at_some_time_within_date "2018-01-12"^^xsd:date .
+
+dig:u129u-klejkajo-2309124u-sajfl a dig:Person, dig:Person;
+  dig:name "John Doe", "John Doe" .
+
+spider:green-goblin a foaf:Person;
+  foaf:name "Green Goblin";
+  rel:enemyOf spider:spiderman .
+
+spider:spiderman a foaf:Person;
+  foaf:name "Spiderman", "Peter Parker";
+  rel:enemyOf spider:green-goblin .
+
+_:node1fj8nkr02x1 a dig:Time_Span;
+  dig:at_some_time_within_date "2018-01-12"^^xsd:date .

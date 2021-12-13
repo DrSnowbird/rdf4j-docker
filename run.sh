@@ -25,19 +25,78 @@ fi
 ## ------------------------------------------------------------------------
 BUILD_TYPE=0
 
+###################################################
+#### ---- Parse Command Line Arguments:  ---- #####
+###################################################
+IS_TO_RUN_CPU=0
+IS_TO_RUN_GPU=1
+
+
+RESTART_OPTION_VALUES=" no on-failure unless-stopped always "
+RESTART_OPTION=${RESTART_OPTION:-no}
+
 ## ------------------------------------------------------------------------
-## Valid "RUN_TYPE" values: 
-##    0: (default) Interactive Container -
+## "RUN_OPTION" values: 
+##    "-it" : (default) Interactive Container -
 ##       ==> Best for Debugging Use
-##    1: Detach Container / Non-Interactive 
+##    "-d" : Detach Container / Non-Interactive 
 ##       ==> Usually, when not in debugging mode anymore, then use 1 as choice.
 ##       ==> Or, your frequent needs of the container for DEV environment Use.
 ## ------------------------------------------------------------------------
-if [ "$1" = "-d" ]; then
-    RUN_TYPE=1
-    shift 1
-fi
-RUN_TYPE=${RUN_TYPE:-0}
+RUN_OPTION=${RUN_OPTION:-" -it "}
+
+PARAMS=""
+while (( "$#" )); do
+  case "$1" in
+    -c|--cpu)
+      IS_TO_RUN_CPU=1
+      IS_TO_RUN_GPU=0
+      GPU_OPTION=
+      shift
+      ;;
+    -g|--gpu)
+      IS_TO_RUN_CPU=0
+      IS_TO_RUN_GPU=1
+      GPU_OPTION=" --gpus all "
+      shift
+      ;;
+    -d|--detach)
+      RUN_OPTION=" -d "
+      shift
+      ;;
+    -it)
+      RUN_OPTION=" -it "
+      shift
+      ;;
+    -r|--restart)
+      ## Valid "RESTART_OPTION" values:
+      ##  { no, on-failure, unless-stopped, always }
+      if [[ "${RESTART_OPTION_VALUES}" =~ .*" $2 ".* ]]; then
+          RESTART_OPTION=$2
+          shift 2
+      else
+          echo "*** ERROR: -r|--restart options: { no, on-failure, unless-stopped, always }"
+          exit 1
+      fi
+      ;;
+    -*|--*=) # unsupported flags
+      echo "Error: Unsupported flag $1" >&2
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
+  esac
+done
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
+
+echo "-c (IS_TO_RUN_CPU): $IS_TO_RUN_CPU"
+echo "-g (IS_TO_RUN_GPU): $IS_TO_RUN_GPU"
+
+echo "remiaing args:"
+echo $*
 
 ## ------------------------------------------------------------------------
 ## -- Container 'hostname' use: 
@@ -86,40 +145,31 @@ function check_NVIDIA() {
 #check_NVIDIA
 #echo "GPU_OPTION= ${GPU_OPTION}"
 
-#echo "$@"
+echo "$@"
 
 ## ------------------------------------------------------------------------
 ## Change to one (1) if run.sh needs to use host's user/group to run the Container
-## Valid "USER_VARS_NEEDED" values: 
+## Valid "USER_OPTIONS_NEEDED" values: 
 ##    0: (default) Not using host's USER / GROUP ID
 ##    1: Yes, using host's USER / GROUP ID for Container running.
 ## ------------------------------------------------------------------------
-USER_VARS_NEEDED=0
-
-## ------------------------------------------------------------------------
-## Valid "RESTART_OPTION" values:
-##  { no, on-failure, unless-stopped, always }
-## ------------------------------------------------------------------------
-if [ "$1" = "-a" ] && [ "${RUN_TYPE}" = "1" ] ; then
-    RESTART_OPTION=always
-    shift 1
-fi
-RESTART_OPTION=${RESTART_OPTION:-no}
+USER_OPTIONS_NEEDED=1
 
 ## ------------------------------------------------------------------------
 ## More optional values:
 ##   Add any additional options here
 ## ------------------------------------------------------------------------
 #MORE_OPTIONS="--privileged=true"
-MORE_OPTIONS=""
+#MORE_OPTIONS="--ipc=host --shm-size 4g"
+MORE_OPTIONS="--ipc=host"
 
 ## ------------------------------------------------------------------------
 ## Multi-media optional values:
 ##   Add any additional options here
 ## ------------------------------------------------------------------------
 #MEDIA_OPTIONS=" --device /dev/snd --device /dev/dri  --device /dev/video0  --group-add audio  --group-add video "
-MEDIA_OPTIONS=" --device /dev/snd --device /dev/dri  --group-add audio  --group-add video "
-#MEDIA_OPTIONS=
+#MEDIA_OPTIONS=" --group-add audio  --group-add video --device /dev/snd --device /dev/dri  "
+MEDIA_OPTIONS=
 
 ###############################################################################
 ###############################################################################
@@ -140,46 +190,6 @@ if [ "${RESTART_OPTION}" != "no" ]; then
     REMOVE_OPTION=""
 fi
 
-########################################
-#### ---- Usage for BUILD_TYPE ---- ####
-########################################
-function buildTypeUsage() {
-    echo "## ------------------------------------------------------------------------"
-    echo "## Valid BUILD_TYPE values: "
-    echo "##    0: (default) has neither X11 nor VNC/noVNC container build image type"
-    echo "##    1: X11/Desktip container build image type"
-    echo "##    2: VNC/noVNC container build image type"
-    echo "## ------------------------------------------------------------------------"
-}
-
-if [ "${BUILD_TYPE}" -lt 0 ] || [ "${BUILD_TYPE}" -gt 2 ]; then
-    buildTypeUsage
-    exit 1
-fi
-
-########################################
-#### ---- Validate RUN_TYPE    ---- ####
-########################################
- 
-RUN_OPTION=${RUN_OPTION:-" -it "}
-function validateRunType() {
-    case "${RUN_TYPE}" in
-        0 )
-            RUN_OPTION=" -it "
-            ;;
-        1 )
-            RUN_OPTION=" -d "
-            ;;
-        * )
-            echo "**** ERROR: Incorrect RUN_TYPE: ${RUN_TYPE} is used! Abort ****"
-            exit 1
-            ;;
-    esac
-}
-validateRunType
-echo "RUN_TYPE=${RUN_TYPE}"
-echo "RUN_OPTION=${RUN_OPTION}"
-echo "RESTART_OPTION=${RESTART_OPTION}"
 echo "REMOVE_OPTION=${REMOVE_OPTION}"
 
 ###########################################################################
@@ -187,7 +197,7 @@ echo "REMOVE_OPTION=${REMOVE_OPTION}"
 ###########################################################################
 
 ## -- (this script will include ./.env only if "./docker-run.env" not found
-DOCKER_ENV_FILE="./docker-run.env"
+DOCKER_ENV_FILE="./.env"
 
 ###########################################################################
 #### (Optional - to filter Environmental Variables for Running Docker)
@@ -216,6 +226,7 @@ function get_HOST_IP() {
         HOST_NAME=`hostname -f`
         HOST_IP=`ip route get 1|grep via | awk '{print $7}'`
         SED_MAC_FIX=
+        echo -e ">>>> HOST_IP: ${HOST_IP}"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OSX
         HOST_NAME=`hostname -f`
@@ -312,14 +323,19 @@ function detectDockerRunEnvFile() {
 }
 detectDockerRunEnvFile
 
-########################################
-#### ---- USER_VARS: Optional setup:---- ####
-########################################
-#USER_OPTIONS="--user $(id -u):$(id -g)"
-USER_ID=`cat ${DOCKER_ENV_FILE} | grep  "^USER_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
-GROUP_ID=`cat ${DOCKER_ENV_FILE} | grep  "^GROUP_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
-USER_OPTIONS="--user ${USER_ID:-1000}:${GROUP_ID:-1000}"
-
+################################################
+#### ---- USER_OPTIONS: Optional setup:---- ####
+################################################
+USER_OPTION=
+function user_ids_options() {
+    #USER_OPTIONS="--user $(id -g):$(id -u)"
+    USER_ID=`cat ${DOCKER_ENV_FILE} | grep  "^USER_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
+    GROUP_ID=`cat ${DOCKER_ENV_FILE} | grep  "^GROUP_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
+    if [ "${USER_ID}" != "" ] && [ "${USER_ID}" != "" ]; then
+        USER_OPTIONS="--user ${USER_ID:-$(id -g)}:${GROUP_ID:-$(id -u)}"
+    fi
+}
+user_ids_options
 
 ###################################################
 #### ---- Function: Generate volume mappings  ----
@@ -361,12 +377,12 @@ function cutomizedVolume() {
 
 function checkHostVolumePath() {
     _left=$1
-    mkdir -p ${_left}
-    sudo chown -R $USER_ID:$USER_ID ${_left}
     if [ -s ${_left} ]; then 
         ls -al ${_left}
-    else 
-        echo "*** ERROR: ${_left}: Not existing!"
+    else
+        echo "--- checkHostVolumePath: ${_left}: Not existing!"
+        mkdir -p ${_left}
+	sudo chown -R $USER_ID:$USER_ID ${_left}
     fi
 }
 
@@ -432,14 +448,15 @@ function generateVolumeMapping() {
                         fi
                         checkHostVolumePath "${left}"
                     fi
+                    mkdir -p ${LOCAL_VOLUME_DIR}/${left}
+                    if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/${left}; fi
                 fi
             fi
         else
             ## -- pattern like: "data"
             debug "-- default sub-directory (without prefix absolute path) --"
             VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/$vol:${DOCKER_VOLUME_DIR}/$vol"
-            mkdir -p ${LOCAL_VOLUME_DIR}/$vol
-	    chown -R ${USER_ID}:${USER_ID}/$vol
+            checkHostVolumePath "${LOCAL_VOLUME_DIR}/$vol"
             if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/$vol; fi
         fi       
         echo ">>> expanded VOLUME_MAP: ${VOLUME_MAP}"
@@ -478,7 +495,8 @@ echo "PORT_MAP=${PORT_MAP}"
 ###################################################
 #### ---- Generate Environment Variables       ----
 ###################################################
-ENV_VARS=""
+ENV_VARS=
+ENV_APP_RUN_CMD=
 function generateEnvVars_v2() {
     while read line; do
         echo "Line=$line"
@@ -608,12 +626,12 @@ function cleanup() {
 ###################################################
 function displayURL() {
     port=${1}
-    echo "... Go to: http://${MY_IP}:${port}"
-    #firefox http://${MY_IP}:${port} &
+    echo "... Go to: http://${HOST_IP}:${port}"
+    #firefox http://${HOST_IP}:${port} &
     if [ "`which google-chrome`" != "" ]; then
-        /usr/bin/google-chrome http://${MY_IP}:${port} &
+        /usr/bin/google-chrome http://${HOST_IP}:${port} &
     else
-        firefox http://${MY_IP}:${port} &
+        firefox http://${HOST_IP}:${port} &
     fi
 }
 
@@ -675,13 +693,6 @@ echo "---------------------------------------------"
 
 cleanup
 
-#################################
-## -- USER_VARS into Docker -- ##
-#################################
-if [ ${USER_VARS_NEEDED} -gt 0 ]; then
-    USER_VARS="--user $(id -u $USER)"
-fi
-
 echo "--------------------------------------------------------"
 echo "==> Commands to manage Container:"
 echo "--------------------------------------------------------"
@@ -695,17 +706,22 @@ echo "--------------------------------------------------------"
 #################################
 ## ---- Detect Media/Sound: -- ##
 #################################
-MEDIA_OPTIONS="--group-add audio "
-#            --device /dev/snd:/dev/snd \
+MEDIA_OPTIONS=""
 function detectMedia() {
-    if [ "$1" != "" ]; then
-        if [ -s $1 ]; then
+    devices="/dev/snd /dev/dri"
+    for device in $devices; do
+        if [ -s $device ]; then
             # --device /dev/snd:/dev/snd
-            MEDIA_OPTIONS="${MEDIA_OPTIONS} --device $1:$1"
-            echo "MEDIA_OPTIONS= ${MEDIA_OPTION}"
+            if [ "${MEDIA_OPTIONS}" == "" ]; then
+                MEDIA_OPTIONS=" --group-add audio --group-add video "
+            fi
+            # MEDIA_OPTIONS=" --group-add audio  --group-add video --device /dev/snd --device /dev/dri  "
+            MEDIA_OPTIONS="${MEDIA_OPTIONS} --device $device:$device"
         fi
-    fi
+    done
+    echo "MEDIA_OPTIONS= ${MEDIA_OPTION}"
 }
+detectMedia
 
 #################################
 ## -_-- Setup X11 Display -_-- ##
@@ -716,19 +732,17 @@ function setupDisplayType() {
         # ...
         xhost +SI:localuser:$(id -un) 
         xhost + 127.0.0.1
-        detectMedia "/dev/snd"
         echo ${DISPLAY}
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OSX
-        # if you want to multi-media, you need customize it here
-        MEDIA_OPTIONS=
+        # if you want to multi-media in MacOS, you need customize it here
+        MEDIA_OPTIONS=""
         xhost + 127.0.0.1
         export DISPLAY=host.docker.internal:0
         echo ${DISPLAY}
     elif [[ "$OSTYPE" == "cygwin" ]]; then
         # POSIX compatibility layer and Linux environment emulation for Windows
         xhost + 127.0.0.1
-        detectMedia "/dev/snd"
         echo ${DISPLAY}
     elif [[ "$OSTYPE" == "msys" ]]; then
         # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
@@ -737,7 +751,6 @@ function setupDisplayType() {
     elif [[ "$OSTYPE" == "freebsd"* ]]; then
         # ...
         xhost + 127.0.0.1
-        detectMedia "/dev/snd"
         echo ${DISPLAY}
     else
         # Unknown.
@@ -785,7 +798,7 @@ fi
 ##################################################
 ##################################################
 set -x
-
+echo -e ">>> (final) ENV_VARS=${ENV_VARS}"
 case "${BUILD_TYPE}" in
     0)
         #### 0: (default) has neither X11 nor VNC/noVNC container build image type
@@ -794,9 +807,10 @@ case "${BUILD_TYPE}" in
         docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
+            ${GPU_OPTION} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${privilegedString} \
-            --user 1001 ${USER_VARS} \
+            ${USER_OPTIONS} \
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \
@@ -816,11 +830,12 @@ case "${BUILD_TYPE}" in
         docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
+            ${GPU_OPTION} \
             ${MEDIA_OPTIONS} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${X11_OPTION} \
             ${privilegedString} \
-            ${USER_VARS} \
+            ${USER_OPTIONS} \
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \
@@ -841,9 +856,10 @@ case "${BUILD_TYPE}" in
         docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
+            ${GPU_OPTION} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${privilegedString} \
-            ${USER_VARS} \
+            ${USER_OPTIONS} \
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \

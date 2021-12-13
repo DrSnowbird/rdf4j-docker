@@ -1,0 +1,42 @@
+<http://www.university.org/> {
+
+<http://xmlns.com/foaf/0.1/Person> <http://www.example.org/hasName>    “Person name” .
+<http://xmlns.com/foaf/0.1/Person> <http://www.example.org/LivesIn>     <http://www.example.org/Place>  .
+<http://xmlns.com/foaf/0.1/Person> <http://www.example.org/WasBornIn> <http://www.example.org/Place>  .
+
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.w3.org/2000/01/rdf-schema#SubClass> <http://xmlns.com/foaf/0.1/Person> .
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.example.org/EnrolledIn>    <http://www.example.org/Programme> .
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.example.org/AttendsIn>    <http://www.example.org/Module> .
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.example.org/TakesExam>    <http://www.example.org/Exam> .
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.example.org/RegisteredIn>    <http://www.example.org/University> .
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.example.org/hasDegree>    <http://www.example.org/Degree>  .
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.example.org/hasStudentID>  “Student ID” .
+<http://xmlns.com/foaf/0.1/Person/Student> <http://www.example.org/StartedStudyingOn> “Starting Date” .
+
+<http://www.example.org/Programme> <http://www.example.org/hasProgrammeName>    “Programme Name” .
+<http://www.example.org/Programme> <http://www.example.org/hasProgrammeID>    “Programme ID” .
+<http://www.example.org/Programme> <http://www.example.org/isPartOf>    <http://www.example.org/University/Faculty>  .
+
+<http://www.example.org/Programme/Module> <http://www.w3.org/2000/01/rdf-schema#SubClass> <http://www.example.org/Programme> .
+<http://www.example.org/Programme/Module> <http://www.example.org/hasModuleID> “Module ID” .
+<http://www.example.org/Programme/Module> <http://www.example.org/hasNameID> “Module Name” .
+<http://www.example.org/Programme/Module> <http://www.example.org/hasGrade> “Grade” .
+<http://www.example.org/Programme/Module> <http://www.example.org/hasEnrollmentDate> “Enrollment Date” .
+<http://www.example.org/Programme/Module> <http://www.example.org/takesPlaceIn>    <http://www.example.org/University/Faculty>  .
+
+<http://www.example.org/Exam> <http://www.example.org/hasNameExam> “Exam Name” .
+
+<http://www.example.org/University> <http://www.example.org/hasUniversityName> “University Name” .
+<http://www.example.org/University> <http://www.example.org/isLocatedIn> Place .
+
+<http://www.example.org/University/Faculty> <http://www.w3.org/2000/01/rdf-schema#SubClass>  <http://www.example.org/University>  .
+
+<http://www.example.org/Degree/BSc> <http://www.w3.org/2000/01/rdf-schema#SubClass>     <http://www.example.org/Degree>  .
+<http://www.example.org/Degree/MSc> <http://www.w3.org/2000/01/rdf-schema#SubClass>     <http://www.example.org/Degree>  .
+<http://www.example.org/Degree/PhD> <http://www.w3.org/2000/01/rdf-schema#SubClass>  <http://www.example.org/Degree>  .
+
+<http://www.example.org/Place/Country> <http://www.w3.org/2000/01/rdf-schema#SubClass> <http://www.example.org/Place> .
+<http://www.example.org/Place/County> <http://www.w3.org/2000/01/rdf-schema#SubClass> <http://www.example.org/Place> .
+<http://www.example.org/Place/City> <http://www.w3.org/2000/01/rdf-schema#SubClass> <http://www.example.org/Place> .
+
+}

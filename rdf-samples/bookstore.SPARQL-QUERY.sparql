@@ -1,0 +1,7 @@
+PREFIX : <http://bookstore.org/libarary#>
+
+SELECT *
+FROM :BooksGraph
+WHERE {
+    ?s ?p ?o .
+}

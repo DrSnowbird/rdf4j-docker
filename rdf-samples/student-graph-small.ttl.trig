@@ -1,0 +1,17 @@
+@prefix dig: <http://dig.isi.edu/> .
+
+<http://dig.isi.edu/> {
+
+    dig:John a dig:Man;
+      dig:hasSpouse dig:Mary;
+      dig:name "John" .
+
+    dig:Mary a dig:Woman;
+      dig:hasSpouse dig:John;
+      dig:name "Mary" .
+
+    dig:John_jr a dig:Man;
+      dig:hasParent dig:John, dig:Mary;
+      dig:name "John Jr." .
+
+}

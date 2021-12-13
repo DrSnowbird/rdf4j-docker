@@ -58,19 +58,28 @@ SHA := $(shell git describe --match=NeVeRmAtCh --always --abbrev=40 --dirty=*)
 .PHONY: clean rmi build push pull up down run stop exec
 
 clean:
-	echo $(DOCKER_NAME) $(DOCKER_IMAGE):$(VERSION) 
+	$(DOCKER_NAME) $(DOCKER_IMAGE):$(VERSION) 
 
 default: build
 
-build:
+build-time:
 	docker build \
+	--build-arg BASE_IMAGE="$(BASE_IMAGE)" \
+	--build-arg CIRCLE_SHA1="$(SHA)" \
+	--build-arg version=$(VERSION) \
+	--build-arg VCS_REF=`git rev-parse --short HEAD` \
+	--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
 	-t $(DOCKER_IMAGE):$(VERSION) .
 
 build-rm:
 	docker build --force-rm --no-cache \
 	-t $(DOCKER_IMAGE):$(VERSION) .
-	
-push: build
+
+build:
+	docker build \
+	-t $(DOCKER_IMAGE):$(VERSION) .
+
+push:
 	docker commit -m "$comment" ${containerID} ${imageTag}:$(VERSION)
 	docker push $(DOCKER_IMAGE):$(VERSION)
 
@@ -82,6 +91,7 @@ push: build
 		mkdir -p $(IMAGE_EXPORT_PATH); \
 		docker save $(REGISTRY_IMAGE):$(VERSION) | gzip > $(IMAGE_EXPORT_PATH)/$(DOCKER_NAME)_$(VERSION).tar.gz; \
 	fi
+	
 pull:
 	@if [ "$(REGISTRY_HOST)" = "" ]; then \
 		docker pull $(DOCKER_IMAGE):$(VERSION) ; \
@@ -89,8 +99,7 @@ pull:
 		docker pull $(REGISTRY_IMAGE):$(VERSION) ; \
 	fi
 
-
-up: 
+up:
 	docker-compose up -d
 
 down:
@@ -99,7 +108,7 @@ down:
 run:
 	docker run --name=$(DOCKER_NAME) --restart=$(RESTART_OPTION) $(VOLUME_MAP) $(DOCKER_IMAGE):$(VERSION)
 
-stop: run
+stop:
 	docker stop --name=$(DOCKER_NAME)
 
 status:
@@ -108,5 +117,5 @@ status:
 rmi:
 	docker rmi $$(docker images -f dangling=true -q)
 
-exec: up
+exec:
 	docker-compose exec $(DOCKER_NAME) /bin/bash

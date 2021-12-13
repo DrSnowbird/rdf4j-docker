@@ -1,0 +1,51 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix prop: <http://www.example.org/ .
+@prefix stu: <http://xmlns.com/foaf/0.1/Person/Student> .
+@prefix subclass <http://www.w3.org/2000/01/rdf-schema#SubClass> .
+@prefix prog <http://www.example.org/Programme> .
+@prefix univ <http://www.example.org/University> .
+@prefix deg <http://www.example.org/Degree> .
+@prefix place <http://www.example.org/Place> .
+
+GRAPH <http://www.university.org/> {
+
+foaf prop:hasName    “Person name” .
+foaf prop:LivesIn     place: .
+foaf prop:WasBornIn place: .
+
+stu subclass foaf .
+stu prop:EnrolledIn    prop:Programme .
+stu prop:AttendsIn    prop:Module .
+stu prop:TakesExam    prop:Exam .
+stu prop:RegisteredIn    univ .
+stu prop:hasDegree    deg  .
+stu prop:hasStudentID  “Student ID” .
+stu prop:StartedStudyingOn “Starting Date” .
+
+prog prop:hasProgrammeName    “Programme Name” .
+prog prop:hasProgrammeID    “Programme ID” .
+prog prop:isPartOf    uni:Faculty  .
+
+prog:Module subclass prog .
+prog:Module prop:hasModuleID “Module ID” .
+prog:Module prop:hasNameID “Module Name” .
+prog:Module prop:hasGrade “Grade” .
+prog:Module prop:hasEnrollmentDate    “Enrollment Date” .
+prog:Module prop:takesPlaceIn    univ:Faculty  .
+
+prop:Exam prop:hasNameExam “Exam Name” .
+
+univ: prop:hasUniversityName “University Name” .
+univ: prop:isLocatedIn Place .
+
+uni:Faculty subclass:  univ  .
+
+deg:BSc subclass  deg:  .
+deg:MSc subclass  deg:  .
+deg:PhD subclass  deg: .
+
+place:Country subclass place:Place .
+place:County subclass place:Place .
+place:City subclass place:Place .
+
+}

@@ -4,7 +4,8 @@ services:
   rdf4j-docker:
     container_name: rdf4j-docker
     image: openkbs/rdf4j-docker
-    hostname: $HOSTNAME
+    hostname: ${HOSTNAME}
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,17 +24,19 @@ services:
       - JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
     volumes:
       ## ==== Common mapping ====
-      - /etc/hosts:/etc/hosts
-      - /dev/shm:/dev/shm 
-      - /var/run/docker.sock:/var/run/docker.sock
+      #- /etc/hosts:/etc/hosts
+      #- /dev/shm:/dev/shm 
+      #- /var/run/docker.sock:/var/run/docker.sock
       ## ==== RDF4J Setup: ====
       ## (make sure you manually create directory below before you run docker-compose!!)
       ## (mkdir -p ./data)
       - ./data:${RDF4J_DATA}
-      ## ==== Use current directory as root for mapping Volumes ====
+      ## ==== Use $HOME/data-docker/rdf4j-docker for mapping Volumes ====
       ## (You need to manually create those child directory: ./data, ./workspace, and others)
       - ./data:/home/tomcat/data
       - ./workspace:/home/tomcat/workspace
+      #- $HOME/data-docker/rdf4j-docker/data:/home/tomcat/data
+      #- $HOME/data-docker/rdf4j-docker/workspace:/home/tomcat/workspace
       ## ==== Special Volume for RDF4J Repositories
       #- rdf4j_volume:/home/tomcat/rdf4j_data:rw
 
@@ -49,7 +52,11 @@ services:
     ## -----------------------------
     # networks:
     #  - dev_network
-  
+
+#volumes:
+#    rdf4j_volume:
+#        external: false
+
 #networks:
 #  dev_network:
 #    external:

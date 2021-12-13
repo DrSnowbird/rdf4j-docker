@@ -1,0 +1,12 @@
+PREFIX ex: <http://www.example.org/vocabulary#>
+PREFIX : <http://bookstore.org/libarary#>
+
+INSERT DATA
+{ 
+  GRAPH :BooksGraph 
+  { 
+    :book2 <http://example.org/ns#price> 42 .
+    :book2 <http://purl.org/dc/elements/1.1/title> "David Copperfield" .
+    :book2 <http://purl.org/dc/elements/1.1/creator> "Edmund Wells" .
+  } 
+}

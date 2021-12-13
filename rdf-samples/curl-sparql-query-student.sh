@@ -9,7 +9,8 @@ curl -X POST \
   -H 'cache-control: no-cache' \
   -H 'content-type: application/sparql-query' \
   -H 'postman-token: 1cde015b-b293-80df-ba6c-f0f06b1d4963' \
-  -d 'PREFIX dig: <http://dig.isi.edu/>
+  -d '
+PREFIX dig: <http://dig.isi.edu/>
 PREFIX spider: <http://spiderman.example.org/>
 
 PREFIX : <http://dig.isi.edu/>

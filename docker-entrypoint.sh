@@ -8,8 +8,11 @@
 # Abort on any error (good shell hygiene)
 set -e
 
-env
+echo ">>>>>>>>>>>>>>>>>>>>>>>> whoami: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> (start)"
 whoami
+id
+echo ">>>>>>>>>>>>>>>>>>>>>>>> whoami: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> (end)"
+
 env | sort
 
 echo "Inputs: $*"

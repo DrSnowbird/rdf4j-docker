@@ -312,6 +312,15 @@ function detectDockerRunEnvFile() {
 }
 detectDockerRunEnvFile
 
+########################################
+#### ---- USER_VARS: Optional setup:---- ####
+########################################
+#USER_OPTIONS="--user $(id -u):$(id -g)"
+USER_ID=`cat ${DOCKER_ENV_FILE} | grep  "^USER_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
+GROUP_ID=`cat ${DOCKER_ENV_FILE} | grep  "^GROUP_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
+USER_OPTIONS="--user ${USER_ID:-1000}:${GROUP_ID:-1000}"
+
+
 ###################################################
 #### ---- Function: Generate volume mappings  ----
 ####      (Don't change!)
@@ -353,7 +362,7 @@ function cutomizedVolume() {
 function checkHostVolumePath() {
     _left=$1
     mkdir -p ${_left}
-    sudo chown -R $USER:$USER ${_left}
+    sudo chown -R $USER_ID:$USER_ID ${_left}
     if [ -s ${_left} ]; then 
         ls -al ${_left}
     else 
@@ -430,6 +439,7 @@ function generateVolumeMapping() {
             debug "-- default sub-directory (without prefix absolute path) --"
             VOLUME_MAP="${VOLUME_MAP} -v ${LOCAL_VOLUME_DIR}/$vol:${DOCKER_VOLUME_DIR}/$vol"
             mkdir -p ${LOCAL_VOLUME_DIR}/$vol
+	    chown -R ${USER_ID}:${USER_ID}/$vol
             if [ $DEBUG -gt 0 ]; then ls -al ${LOCAL_VOLUME_DIR}/$vol; fi
         fi       
         echo ">>> expanded VOLUME_MAP: ${VOLUME_MAP}"
@@ -492,15 +502,6 @@ function generateEnvVars() {
         #productEnvVars=`grep -E "^[[:blank:]]*$1[a-zA-Z0-9_]+[[:blank:]]*=[[:blank:]]*[a-zA-Z0-9_]+[[:blank:]]*" ${DOCKER_ENV_FILE}`
         productEnvVars=`grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" ${DOCKER_ENV_FILE} | grep -v "^#"`
     fi
-    for vars in 
-        do
-        echo "Line=$line"
-        key=${line%=*}
-        value=${line#*=}
-        #key=$(eval echo $value)
-        #ENV_VARS="${ENV_VARS} -e ${line%=*}=$(eval echo $value)"
-        ENV_VARS="${ENV_VARS} -e ${line}"
-    done
     ENV_VARS_STRING=""
     for vars in ${productEnvVars// /}; do
         debug "Entry => $vars"
@@ -795,7 +796,7 @@ case "${BUILD_TYPE}" in
             --restart=${RESTART_OPTION} \
             ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
             ${privilegedString} \
-            ${USER_VARS} \
+            --user 1001 ${USER_VARS} \
             ${ENV_VARS} \
             ${VOLUME_MAP} \
             ${PORT_MAP} \

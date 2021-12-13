@@ -13,13 +13,13 @@ MAINTAINER DrSnowbird "DrSnowbird@openkbs.org"
 #### ====
 #### ==== This will be replaced with the latest release from the download site of the product ====
 #### ====
-ENV PRODUCT_VERSION=3.7.3
+ENV PRODUCT_VERSION=3.7.4
 
 ENV RDF4J_VERSION=${PRODUCT_VERSION}
 ENV RDF4J_HOME=${RDF4J_HOME:-/opt/eclipse-rdf4j-${RDF4J_VERSION}}
 
 #ENV RDF4J_DATA=${RDF4J_DATA:-/opt/eclipse-rdf4j-${RDF4J_VERSION}/data}
-ENV RDF4J_DATA=${HOME}/data
+ENV RDF4J_DATA=${RDF4J_DATA:-${HOME}/data-rdf4j}
 
 ENV JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
 
@@ -50,7 +50,7 @@ EXPOSE 8080 8443
 #### ---- Start Tomcat:  ----
 #### ------------------------
 RUN sudo chmod +x /docker-entrypoint.sh && ls -al /docker-entrypoint.sh
-#RUN sudo groupadd -g 1000 ${USER}
+#RUN whoami && id && groups && cat /etc/group && sudo groupadd 1000 && echo "USER=${USER}" && sudo usermod -a -G developer ${USER}
 
 USER ${USER}
 WORKDIR ${CATALINA_HOME}

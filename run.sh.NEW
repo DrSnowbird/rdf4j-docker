@@ -28,8 +28,8 @@ BUILD_TYPE=0
 ####################################################
 #### ---- NVIDIA GPU Check/Setup or not:  ---- #####
 ####################################################
-IS_TO_RUN_CPU=0
-IS_TO_RUN_GPU=1
+IS_TO_RUN_CPU=1
+IS_TO_RUN_GPU=0
 
 ###################################################
 #### ---- Parse Command Line Arguments:  ---- #####
@@ -37,6 +37,14 @@ IS_TO_RUN_GPU=1
 
 RESTART_OPTION_VALUES=" no on-failure unless-stopped always "
 RESTART_OPTION=${RESTART_OPTION:-no}
+
+## ------------------------------------------------------------------------
+## Change to one (1) if run.sh needs to use host's user/group to run the Container
+## Valid "USER_VARS_NEEDED" values: 
+##    0: (default) Not using host's USER / GROUP ID
+##    1: Yes, using host's USER / GROUP ID for Container running.
+## ------------------------------------------------------------------------
+USER_VARS_NEEDED=1
 
 ## ------------------------------------------------------------------------
 ## Valid "RUN_TYPE" values: 
@@ -112,11 +120,11 @@ echo $@
 
 ## ------------------------------------------------------------------------
 ## -- Container 'hostname' use: 
-## -- Default= 1 (use HOST_IP)
+## -- Default= 2 (use HOST_NAME)
 ## -- 1: HOST_IP
 ## -- 2: HOST_NAME
 ## ------------------------------------------------------------------------
-HOST_USE_IP_OR_NAME=${HOST_USE_IP_OR_NAME:-1}
+HOST_USE_IP_OR_NAME=${HOST_USE_IP_OR_NAME:-2}
 
 ########################################
 #### ---- NVIDIA GPU Checking: ---- ####
@@ -166,13 +174,6 @@ if [ ${IS_TO_RUN_GPU} -gt 0 ]; then
 fi
 echo "$@"
 
-## ------------------------------------------------------------------------
-## Change to one (1) if run.sh needs to use host's user/group to run the Container
-## Valid "USER_VARS_NEEDED" values: 
-##    0: (default) Not using host's USER / GROUP ID
-##    1: Yes, using host's USER / GROUP ID for Container running.
-## ------------------------------------------------------------------------
-USER_VARS_NEEDED=0
 
 ## ------------------------------------------------------------------------
 ## More optional values:
@@ -510,7 +511,7 @@ function generateEnvVars2() {
     for key in ${key_list}; do
         echo ">>>> key=$key"
         value=`cat ${DOCKER_ENV_FILE} | grep -v "^#" |grep "$key" |  grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" | awk 'BEGIN { FS = "=" } ; { k=$1; $1=""; print $0}' `
-        echo ">>>> value=$value"
+        echo "value=$value"
         #value_trim="${value##+([[:space:]])}"
         value_trim="`echo $value | sed 's/^[[:space:]]*//'`"
         echo "$key=${value_trim}" 
@@ -524,10 +525,9 @@ function generateEnvVars2() {
 #        fi
     done
 }
-#generateEnvVars2
-#echo ">> ENV_VARS=$ENV_VARS"
-#echo ">> ENV_APP_RUN_CMD=$ENV_APP_RUN_CMD"
-
+generateEnvVars2
+echo ">> ENV_VARS=$ENV_VARS"
+echo ">> ENV_APP_RUN_CMD=$ENV_APP_RUN_CMD"
 
 function generateEnvVars_v2() {
     while read line; do
@@ -539,8 +539,9 @@ function generateEnvVars_v2() {
     done < <(grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" ${DOCKER_ENV_FILE} | grep -v "^#")
     echo "ENV_VARS=$ENV_VARS"
 }
-generateEnvVars_v2
-echo ">> ENV_VARS=$ENV_VARS"
+#generateEnvVars_v2
+#echo ">> ENV_VARS=$ENV_VARS"
+
 
 function generateEnvVars() {
     if [ "${1}" != "" ]; then
@@ -728,7 +729,11 @@ cleanup
 ## -- USER_VARS into Docker -- ##
 #################################
 if [ ${USER_VARS_NEEDED} -gt 0 ]; then
-    USER_VARS="--user $(id -u $USER)"
+    if [ "$USER_ID" != "" ]; then
+        USER_VARS=--user $(id -u $USER)
+    else
+        USER_VARS=--user $USER_ID
+    fi
 fi
 
 echo "--------------------------------------------------------"
@@ -828,7 +833,7 @@ if [ ${HOST_USE_IP_OR_NAME} -eq 2 ]; then
     HOSTS_OPTIONS="-h ${HOST_NAME} -v /etc/hosts:/etc/hosts "
 else
     # default use HOST_IP
-    HOSTS_OPTIONS="-h ${HOST_IP} -v /etc/hosts:/etc/hosts "
+    HOSTS_OPTIONS="-h \"${HOST_IP}\" -v /etc/hosts:/etc/hosts "
 fi
 
 ##################################################
@@ -846,6 +851,8 @@ set -x
 #USER_OPTIONS="--user $(id -u):$(id -g)"
 USER_ID=`cat ${DOCKER_ENV_FILE} | grep  "^USER_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
 GROUP_ID=`cat ${DOCKER_ENV_FILE} | grep  "^GROUP_ID=" | cut -d'=' -f2 | sed 's/ *$//g'`
+USER_OPTIONS="--user ${USER_ID:-1000}:${GROUP_ID:-1000}"
+MORE_OPTIONS="${MORE_OPTIONS} ${USER_OPTIONS}"
 
 echo "args-amper:$@"
 echo "args-start:$*"
@@ -854,19 +861,8 @@ case "${BUILD_TYPE}" in
     0)
         #### 0: (default) has neither X11 nor VNC/noVNC container build image type
         #### ---- for headless-based / GUI-less ---- ####
-        #bash -c "docker run --name=${instanceName} --restart=${RESTART_OPTION} ${GPU_OPTION} ${REMOVE_OPTION} ${RUN_OPTION} ${HOSTS_OPTIONS} ${MISC_OPTIONS} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} ${privilegedString} ${USER_VARS} ${ENV_VARS} ${VOLUME_MAP} ${PORT_MAP} ${imageTag} $@ "
-        MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
-        docker run \
-            --name=${instanceName} \
-            --restart=${RESTART_OPTION} \
-            ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
-            ${privilegedString} \
-            ${USER_VARS} \
-            ${ENV_VARS} \
-            ${VOLUME_MAP} \
-            ${PORT_MAP} \
-            ${imageTag} \
-            $@
+	#bash -c "docker run --name=${instanceName}  --restart=${RESTART_OPTION}  ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS}  ${privilegedString}  ${USER_VARS} $ENV_VARS ${VOLUME_MAP}  ${PORT_MAP}  ${imageTag} $* "
+        bash -c "docker run --name=${instanceName} --restart=${RESTART_OPTION} ${GPU_OPTION} ${REMOVE_OPTION} ${RUN_OPTION} ${HOSTS_OPTIONS} ${MISC_OPTIONS} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} ${privilegedString} ${USER_VARS} ${ENV_VARS} ${VOLUME_MAP} ${PORT_MAP} ${imageTag} $@ "
         ;;
     1)
         #### 1: X11/Desktip container build image type
@@ -877,21 +873,7 @@ case "${BUILD_TYPE}" in
         #X11_OPTION="-e DISPLAY=$DISPLAY -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix -e DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket"
         X11_OPTION="-e DISPLAY=$DISPLAY -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix"
         echo "X11_OPTION=${X11_OPTION}"
-        #bash -c "docker run --name=${instanceName} --restart=${RESTART_OPTION} ${GPU_OPTION} ${MEDIA_OPTIONS} ${REMOVE_OPTION} ${RUN_OPTION} ${HOSTS_OPTIONS} ${MISC_OPTIONS} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} ${X11_OPTION} ${privilegedString} ${USER_VARS} ${ENV_VARS} ${VOLUME_MAP} ${PORT_MAP} ${imageTag} $@"
-        MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
-        docker run \
-            --name=${instanceName} \
-            --restart=${RESTART_OPTION} \
-            ${MEDIA_OPTIONS} \
-            ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
-            ${X11_OPTION} \
-            ${privilegedString} \
-            ${USER_VARS} \
-            ${ENV_VARS} \
-            ${VOLUME_MAP} \
-            ${PORT_MAP} \
-            ${imageTag} \
-            $@
+        bash -c "docker run --name=${instanceName} --restart=${RESTART_OPTION} ${GPU_OPTION} ${MEDIA_OPTIONS} ${REMOVE_OPTION} ${RUN_OPTION} ${HOSTS_OPTIONS} ${MISC_OPTIONS} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} ${X11_OPTION} ${privilegedString} ${USER_VARS} ${ENV_VARS} ${VOLUME_MAP} ${PORT_MAP} ${imageTag} $@"
         ;;
     2)
         #### 2: VNC/noVNC container build image type
@@ -903,19 +885,7 @@ case "${BUILD_TYPE}" in
             VNC_RESOLUTION=1920x1080
             ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
         fi
-        #bash -c "docker run --name=${instanceName} --restart=${RESTART_OPTION} ${REMOVE_OPTION} ${RUN_OPTION} ${HOSTS_OPTIONS} ${MISC_OPTIONS} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} ${privilegedString} ${USER_VARS} ${ENV_VARS} ${VOLUME_MAP} ${PORT_MAP} ${imageTag} $@"
-        MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
-        docker run \
-            --name=${instanceName} \
-            --restart=${RESTART_OPTION} \
-            ${REMOVE_OPTION} ${RUN_OPTION} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} \
-            ${privilegedString} \
-            ${USER_VARS} \
-            ${ENV_VARS} \
-            ${VOLUME_MAP} \
-            ${PORT_MAP} \
-            ${imageTag} \
-            $@
+        bash -c "docker run --name=${instanceName} --restart=${RESTART_OPTION} ${REMOVE_OPTION} ${RUN_OPTION} ${HOSTS_OPTIONS} ${MISC_OPTIONS} ${MORE_OPTIONS} ${CERTIFICATE_OPTIONS} ${privilegedString} ${USER_VARS} ${ENV_VARS} ${VOLUME_MAP} ${PORT_MAP} ${imageTag} $@"
         ;;
 
 esac

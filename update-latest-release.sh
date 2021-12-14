@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 LATEST_URL=https://rdf4j.org/download/
-LATEST_VERSION=
+LATEST_VERSION=3.7.4
 function get_latest_release_tomcat() {
     ## -- you need to manual modify this lin to match the latest download URL specifics.
     LATEST_VERSION=`curl --silent ${LATEST_URL} 2>&1 | grep "(latest)" | head -n 1 | awk '{print $2}'`

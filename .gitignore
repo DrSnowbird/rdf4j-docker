@@ -29,3 +29,5 @@ hs_err_pid*
 **tmp/
 *swp
 **/data-save
+
+**/data-rdf4j

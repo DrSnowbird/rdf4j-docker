@@ -25,13 +25,15 @@ fi
 ## ------------------------------------------------------------------------
 BUILD_TYPE=0
 
-###################################################
-#### ---- Parse Command Line Arguments:  ---- #####
-###################################################
+####################################################
+#### ---- NVIDIA GPU Check/Setup or not:  ---- #####
+####################################################
 IS_TO_RUN_CPU=0
 IS_TO_RUN_GPU=1
 
-
+###################################################
+#### ---- Parse Command Line Arguments:  ---- #####
+###################################################
 RESTART_OPTION_VALUES=" no on-failure unless-stopped always "
 RESTART_OPTION=${RESTART_OPTION:-no}
 
@@ -68,6 +70,10 @@ while (( "$#" )); do
       RUN_OPTION=" -it "
       shift
       ;;
+    -t|--imageTag)
+      imageTag=$2
+      shift 2
+      ;;
     -r|--restart)
       ## Valid "RESTART_OPTION" values:
       ##  { no, on-failure, unless-stopped, always }
@@ -75,8 +81,9 @@ while (( "$#" )); do
           RESTART_OPTION=$2
           shift 2
       else
-          echo "*** ERROR: -r|--restart options: { no, on-failure, unless-stopped, always }"
-          exit 1
+          echo "--- INFO: -r|--restart options: { no, on-failure, unless-stopped, always }"
+          echo "--- default to 'always' "
+          RESTART_OPTION=unless-stopped
       fi
       ;;
     -*|--*=) # unsupported flags
@@ -95,8 +102,12 @@ eval set -- "$PARAMS"
 echo "-c (IS_TO_RUN_CPU): $IS_TO_RUN_CPU"
 echo "-g (IS_TO_RUN_GPU): $IS_TO_RUN_GPU"
 
+echo ">>> RUN_OPTION: ${RUN_OPTION}"
+echo ">>>> imageTag=${imageTag}"
+
+
 echo "remiaing args:"
-echo $*
+echo $@
 
 ## ------------------------------------------------------------------------
 ## -- Container 'hostname' use: 
@@ -142,9 +153,16 @@ function check_NVIDIA() {
         fi
     fi
 }
-#check_NVIDIA
-#echo "GPU_OPTION= ${GPU_OPTION}"
-
+if [ ${IS_TO_RUN_GPU} -gt 0 ]; then
+    check_NVIDIA
+    #### ---- NVIDIA Docker run recommendations: ----
+    # NOTE: The SHMEM allocation limit is set to the default of 64MB.  This may be
+    #   insufficient for PyTorch.  NVIDIA recommends the use of the following flags:
+    #   docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 ...
+    # -ipc=host --ulimit memlock=-1 --ulimit stack=67108864
+    GPU_OPTION="${GPU_OPTION} --ulimit memlock=-1 --ulimit stack=67108864 "
+    echo "GPU_OPTION= ${GPU_OPTION}"
+fi
 echo "$@"
 
 ## ------------------------------------------------------------------------
@@ -207,12 +225,9 @@ ENV_VARIABLE_PATTERN=""
 ###################################################
 #### ---- Change this only to use your own ----
 ###################################################
-ORGANIZATION=openkbs
+ORGANIZATION=${ORGANIZATION:-openkbs}
 baseDataFolder="$HOME/data-docker"
 
-###################################################
-#### ---- Detect Host OS Type and minor Tweek: ----
-###################################################
 ###################################################
 #### **** Container HOST information ****
 ###################################################
@@ -248,7 +263,7 @@ HOST_NAME=${HOST_NAME:-localhost}
 #### **** Container package information ****
 ###################################################
 DOCKER_IMAGE_REPO=`echo $(basename $PWD)|tr '[:upper:]' '[:lower:]'|tr "/: " "_" `
-imageTag="${ORGANIZATION}/${DOCKER_IMAGE_REPO}"
+imageTag=${imageTag:-"${ORGANIZATION}/${DOCKER_IMAGE_REPO}"}
 #PACKAGE=`echo ${imageTag##*/}|tr "/\-: " "_"`
 PACKAGE="${imageTag##*/}"
 
@@ -367,7 +382,6 @@ function cutomizedVolume() {
         dest_volume=`echo $DATA_VOLUME | cut -d'-' -f2 | cut -d':' -f2`
         source_volume=$(basename $imageTag)_${docker_volume}
         sudo docker volume create ${source_volume}
-        
         VOLUME_MAP="-v ${source_volume}:${dest_volume} ${VOLUME_MAP}"
     else
         echo "---- ${DATA_VOLUME} already is defined! Hence, ignore setup ${DATA_VOLUME} ..."
@@ -377,13 +391,12 @@ function cutomizedVolume() {
 
 function checkHostVolumePath() {
     _left=$1
-    if [ -s ${_left} ]; then 
-        ls -al ${_left}
-    else
+    if [ ! -s ${_left} ]; then 
         echo "--- checkHostVolumePath: ${_left}: Not existing!"
         mkdir -p ${_left}
-	sudo chown -R $USER_ID:$USER_ID ${_left}
     fi
+    sudo chown -R ${USER_ID}:${USER_ID} ${_left}
+    ls -al ${_left}
 }
 
 function generateVolumeMapping() {
@@ -496,7 +509,23 @@ echo "PORT_MAP=${PORT_MAP}"
 #### ---- Generate Environment Variables       ----
 ###################################################
 ENV_VARS=
-ENV_APP_RUN_CMD=
+function generateEnvVars2() {
+    key_list=`cat ${DOCKER_ENV_FILE} | grep -v "^#" |  grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" |  awk 'BEGIN { FS = "=" } ; { print $1 }' `
+    echo "key_list=$key_list"
+    
+    for key in ${key_list}; do
+        echo ">>>> key=$key"
+        value=`cat ${DOCKER_ENV_FILE} | grep -v "^#" |grep "$key" |  grep -E "^[[:blank:]]*$1.+[[:blank:]]*=[[:blank:]]*.+[[:blank:]]*" | awk 'BEGIN { FS = "=" } ; { k=$1; $1=""; print $0}' `
+        echo "value=$value"
+        #value_trim="${value##+([[:space:]])}"
+        value_trim="`echo $value | sed 's/^[[:space:]]*//'`"
+        echo "$key=${value_trim}" 
+        ENV_VARS="${ENV_VARS} -e \"${key}=${value_trim}\""
+    done
+}
+#generateEnvVars2
+#echo ">> ENV_VARS=$ENV_VARS"
+
 function generateEnvVars_v2() {
     while read line; do
         echo "Line=$line"
@@ -614,10 +643,9 @@ echo ${privilegedString}
 #### ---- Mostly, you don't need change below ----
 ###################################################
 function cleanup() {
-    containerID=`sudo docker ps -a|grep "${instanceName}" | awk '{print $1}'`
-    # if [ ! "`sudo docker ps -a|grep ${instanceName}`" == "" ]; then
+    containerID=`docker ps -a | grep "${instanceName}" | awk '{print $1}' `
     if [ "${containerID}" != "" ]; then
-         sudo docker rm -f ${containerID}
+        docker rm -f ${containerID}
     fi
 }
 
@@ -716,7 +744,8 @@ function detectMedia() {
                 MEDIA_OPTIONS=" --group-add audio --group-add video "
             fi
             # MEDIA_OPTIONS=" --group-add audio  --group-add video --device /dev/snd --device /dev/dri  "
-            MEDIA_OPTIONS="${MEDIA_OPTIONS} --device $device:$device"
+            #MEDIA_OPTIONS="${MEDIA_OPTIONS} --device $device:$device"
+            MEDIA_OPTIONS="${MEDIA_OPTIONS} --device $device"
         fi
     done
     echo "MEDIA_OPTIONS= ${MEDIA_OPTION}"
@@ -797,13 +826,17 @@ fi
 ## ----------------- main --------------------- ##
 ##################################################
 ##################################################
-set -x
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo -e ">>> (final) ENV_VARS=${ENV_VARS}"
+
+set -x
+
+MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
+
 case "${BUILD_TYPE}" in
     0)
         #### 0: (default) has neither X11 nor VNC/noVNC container build image type
         #### ---- for headless-based / GUI-less ---- ####
-        MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
         docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
@@ -816,7 +849,7 @@ case "${BUILD_TYPE}" in
             ${PORT_MAP} \
             ${imageTag} \
             $@
-        ;;
+       ;;
     1)
         #### 1: X11/Desktip container build image type
         #### ---- for X11-based ---- #### 
@@ -826,7 +859,6 @@ case "${BUILD_TYPE}" in
         #X11_OPTION="-e DISPLAY=$DISPLAY -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix -e DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket"
         X11_OPTION="-e DISPLAY=$DISPLAY -v /dev/shm:/dev/shm -v /tmp/.X11-unix:/tmp/.X11-unix"
         echo "X11_OPTION=${X11_OPTION}"
-        MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
         docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \
@@ -852,7 +884,6 @@ case "${BUILD_TYPE}" in
             VNC_RESOLUTION=1920x1080
             ENV_VARS="${ENV_VARS} -e VNC_RESOLUTION=${VNC_RESOLUTION}" 
         fi
-        MORE_OPTIONS="${MORE_OPTIONS} ${HOSTS_OPTIONS} "
         docker run \
             --name=${instanceName} \
             --restart=${RESTART_OPTION} \

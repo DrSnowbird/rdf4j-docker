@@ -14,10 +14,8 @@ MAINTAINER DrSnowbird "DrSnowbird@openkbs.org"
 #### ==== This will be replaced with the latest release from the download site of the product ====
 #### ====
 ENV PRODUCT_VERSION=3.7.4
-
 ENV RDF4J_VERSION=${PRODUCT_VERSION}
 ENV RDF4J_HOME=${RDF4J_HOME:-/opt/eclipse-rdf4j-${RDF4J_VERSION}}
-
 #ENV RDF4J_DATA=${RDF4J_DATA:-${HOME}/.RDF4J}
 
 ENV JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
@@ -32,25 +30,5 @@ RUN curl -sS -o ${HOME}/rdf4j.zip -L http://download.eclipse.org/rdf4j/eclipse-r
     sudo mv eclipse-rdf4j-${RDF4J_VERSION} /opt && \
     rm ${HOME}/rdf4j.zip
 
-#RUN mv /opt/eclipse-rdf4j-${RDF4J_VERSION}/war/*.war ${CATALINA_WEBAPPS}
 RUN cp ${RDF4J_HOME}/war/*.war ${CATALINA_WEBAPPS}
 
-#RUN echo "CATALINA_OPTS=\"\$CATALINA_OPTS \$JVM_PARAMS -Dorg.eclipse.rdf4j.appdata.basedir=\${RDF4J_DATA}\"" >> ${CATALINA_HOME}/bin/setenv.sh
-
-## -- debug only (remove these when done) --
-#RUN ls -al ${CATALINA_HOME}
-#RUN cat ${CATALINA_HOME}/bin/setenv.sh
-
-#EXPOSE 8080 8443
-
-#### ------------------------
-#### ---- Start Tomcat:  ----
-#### ------------------------
-#RUN sudo chmod +x /docker-entrypoint.sh && ls -al /docker-entrypoint.sh
-#RUN whoami && id && groups && cat /etc/group && sudo groupadd 1000 && echo "USER=${USER}" && sudo usermod -a -G developer ${USER}
-
-#USER ${USER}
-#WORKDIR ${CATALINA_HOME}
-#ENTRYPOINT ["/docker-entrypoint.sh"]
-
-#CMD ["/launch_tomcat.sh"]

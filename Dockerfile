@@ -1,4 +1,4 @@
-FROM openkbs/jdk-tomcat
+FROM openkbs/tomcat-docker
 
 MAINTAINER DrSnowbird "DrSnowbird@openkbs.org"
 

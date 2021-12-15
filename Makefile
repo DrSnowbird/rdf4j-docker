@@ -55,10 +55,7 @@ RESTART_OPTION := always
 
 SHA := $(shell git describe --match=NeVeRmAtCh --always --abbrev=40 --dirty=*)
 
-.PHONY: clean rmi build push pull up down run stop exec
-
-clean:
-	$(DOCKER_NAME) $(DOCKER_IMAGE):$(VERSION) 
+.PHONY: rmi build push pull up down run stop exec
 
 default: build
 
@@ -91,7 +88,7 @@ push:
 		mkdir -p $(IMAGE_EXPORT_PATH); \
 		docker save $(REGISTRY_IMAGE):$(VERSION) | gzip > $(IMAGE_EXPORT_PATH)/$(DOCKER_NAME)_$(VERSION).tar.gz; \
 	fi
-	
+
 pull:
 	@if [ "$(REGISTRY_HOST)" = "" ]; then \
 		docker pull $(DOCKER_IMAGE):$(VERSION) ; \
@@ -117,5 +114,5 @@ status:
 rmi:
 	docker rmi $$(docker images -f dangling=true -q)
 
-exec:
+exec: up
 	docker-compose exec $(DOCKER_NAME) /bin/bash

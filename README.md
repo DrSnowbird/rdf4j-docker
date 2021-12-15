@@ -27,7 +27,7 @@ https://<host_ip>:28443/rdf4j-workbench
 https://<host_ip>:28443/rdf4j-server
 ```
 ## Tomcat Server
-Web Browser: login `tomcat` (or `admin`) with a default password, `ChangeNow!`
+Web Browser: login `tomcat` (or `admin`) with a default password, `password`
 ```
 http://<host_ip>:28880/
     or

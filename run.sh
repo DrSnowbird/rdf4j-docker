@@ -258,6 +258,28 @@ get_HOST_IP
 HOST_IP=${HOST_IP:-127.0.0.1}
 HOST_NAME=${HOST_NAME:-localhost}
 
+##################################################
+## ---- Setup accessing HOST's /etc/hosts: ---- ##
+##################################################
+IS_USE_HOST_OPTIONS=1
+function container_host_options() {
+    ## **************** WARNING: *********************
+    ## **************** WARNING: *********************
+    ## **************** WARNING: *********************
+    #  => this might open up more attack surface since
+    #   /etc/hosts has other nodes IP/name information
+    # ------------------------------------------------
+    if [ ${IS_USE_HOST_OPTIONS} -gt 0 ]; then
+        if [ ${HOST_USE_IP_OR_NAME} -eq 2 ]; then
+            HOSTS_OPTIONS="-h ${HOST_NAME} -v /etc/hosts:/etc/hosts "
+        else
+            # default use HOST_IP
+            HOSTS_OPTIONS="-h ${HOST_IP} -v /etc/hosts:/etc/hosts "
+        fi
+    fi
+}
+container_host_options
+
 ###################################################
 #### **** Container package information ****
 ###################################################

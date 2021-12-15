@@ -25,7 +25,7 @@ ENV JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
 USER ${USER}
 WORKDIR ${HOME}
 
-RUN curl -sS -o ${HOME}/rdf4j.zip -L http://download.eclipse.org/rdf4j/eclipse-rdf4j-${RDF4J_VERSION}-sdk.zip && \
+RUN curl -k -o ${HOME}/rdf4j.zip -L http://download.eclipse.org/rdf4j/eclipse-rdf4j-${RDF4J_VERSION}-sdk.zip && \
     unzip ${HOME}/rdf4j.zip && \
     sudo mv eclipse-rdf4j-${RDF4J_VERSION} /opt && \
     rm ${HOME}/rdf4j.zip

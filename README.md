@@ -50,9 +50,46 @@ To change TOMCAT password for login 'admin', you can edit './env' file as:
 TOMCAT_PASSWORD=SomewSecretPassword!
 ```
 
+# RDF4J Query
+* Queries on a specific repository with ID <ID> can be evaluated by sending requests to: <RDF4J_URL>/repositories/<ID>. This resource represents a SPARQL query endpoint. 
+* Both GET and POST methods are supported. The GET method is preferred as it adheres to the REST architectural style. 
+* The POST method should be used in cases where the length of the (URL-encoded) query exceeds practicable limits of proxies, servers, etc. In case a POST request is used, the query parameters should be sent to the server as www-form-urlencoded data.
+# HTTP Content Types:
+* [RDF4J - Content Types](https://rdf4j.org/documentation/reference/rest-api/#content-types)
+```
+Content types	
+The following tables summarizes the MIME types for various document formats that are relevant to this protocol.	
+MIME types for RDF formats	
+Format	MIME type
+RDF/XML	application/rdf+xml
+N-Triples	text/plain
+Turtle	text/turtle
+N3	text/rdf+n3
+N-Quads	text/x-nquads
+JSON-LD	application/ld+json
+RDF/JSON	application/rdf+json
+TriX	application/trix
+TriG	application/x-trig
+RDF4J Binary RDF	application/x-binary-rdf
+MIME types for variable binding formats	
+Format	MIME type
+SPARQL Query Results XML	application/sparql-results+xml
+SPARQL Query Results JSON	application/sparql-results+json
+Binary Results Format	application/x-binary-rdf-results-table
+MIME types for boolean result formats	
+Format	MIME type
+SPARQL Query Results XML	application/sparql-results+xml
+SPARQL Query Results JSON	application/sparql-results+json
+Plain Text Boolean Result	text/boolean
+```
+
 # Resource
+* [W3C SPARQL 1.1 Update - W3C Recommendation 21 March 2013](https://www.w3.org/TR/sparql11-update/)
 * [RDF4J](https://rdf4j.org/)
+* [RDF4J - Supported MIME (Content) Types](http://archive.rdf4j.org/users/ch10.html#table-var-binding-formats)
+* [RRD4J REST API](https://rdf4j.org/documentation/reference/rest-api/)
 * [RDF4J-Documentation](https://rdf4j.org/documentation/)
+* [DrSnowbird/jena-fuseki-docker, Apache Jena TDB/TDB2 RDF Server](https://github.com/DrSnowbird/jena-fuseki-docker)
 * [DrSnowbird/blazegraph-docker, high-performance RDF Server](https://github.com/DrSnowbird/blazegraph-docker)
 * [DrSnowbird/json2rdf-docker, converting JSON to RDF](https://github.com/DrSnowbird/json2rdf-docker)
 * [DrSnowbird/visualRDF, Visualize RDF Graph](https://github.com/DrSnowbird/visualRDF)
@@ -67,3 +104,6 @@ TOMCAT_PASSWORD=SomewSecretPassword!
 
 # Releases information
 * [See Releases Information](https://github.com/DrSnowbird/jdk-mvn-py3#releases-information)
+
+
+

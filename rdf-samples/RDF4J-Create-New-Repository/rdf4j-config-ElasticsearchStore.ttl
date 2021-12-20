@@ -1,0 +1,22 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rep: <http://www.openrdf.org/config/repository#>.
+@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
+@prefix sail: <http://www.openrdf.org/config/sail#>.
+@prefix ess: <http://rdf4j.org/config/sail/elasticsearchstore#>.
+@prefix sb: <http://www.openrdf.org/config/sail/base#>.
+
+[] a rep:Repository ;
+   rep:repositoryID "example" ;
+   rdfs:label "Example Elasticsearch store" ;
+   rep:repositoryImpl [
+      rep:repositoryType "openrdf:SailRepository" ;
+      sr:sailImpl [
+         sail:sailType "rdf4j:ElasticsearchStore" ;
+         sail:iterationCacheSyncThreshold "10000";
+         ess:hostname "localhost";
+         ess:port 9200;
+         ess:clusterName "myCluster";
+         ess:index "myIndex";
+         sb:evaluationStrategyFactory "org.eclipse.rdf4j.query.algebra.evaluation.impl.StrictEvaluationStrategyFactory"
+      ]
+   ].

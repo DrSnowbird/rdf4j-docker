@@ -97,7 +97,8 @@ pull:
 	fi
 
 up:
-	docker-compose up -d
+	./run.sh -d -r always
+	# docker-compose up -d
 
 down:
 	docker-compose down

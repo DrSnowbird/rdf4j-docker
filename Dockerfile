@@ -20,8 +20,8 @@ ENV RDF4J_HOME=${RDF4J_HOME:-/opt/eclipse-rdf4j-${RDF4J_VERSION}}
 
 ENV JVM_PARAMS=${JVM_PARAMS:-"-Xms1g -Xmx4g"}
 
-#ENV USER=tomcat
-#ENV HOME=/home/${USER}
+ENV USER=tomcat
+ENV HOME=/home/${USER}
 USER ${USER}
 WORKDIR ${HOME}
 

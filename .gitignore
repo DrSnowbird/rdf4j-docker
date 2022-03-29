@@ -30,6 +30,8 @@ test-*
 *tmp/
 *.tmp
 
+**/*BACKUP/
+
 # data files
 **/data/
 **/data-*/

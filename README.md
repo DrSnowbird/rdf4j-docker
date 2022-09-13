@@ -15,7 +15,7 @@ make build
 ```
 
 ## RDF4J Servers or Workbench
-* When entering RDF4J Server URL: You need to use IP address which can't be '0.0.0.0' (you will get error saying 'can't connect' something like that). For example, the correct RDFJ Server URL should be like this (replace with your own host's IP address below)
+* `(Important!)` When entering RDF4J Server URL: You need to use IP address which `can't be '0.0.0.0'` (you will get error saying 'can't connect' something like that). For example, the correct RDFJ Server URL should be like this (replace with your own host's IP address below)
 ```
 RDF4J Server: http://192.168.0.204:28080/rdf4j-server
 ```
